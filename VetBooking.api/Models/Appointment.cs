@@ -1,5 +1,5 @@
-﻿namespace VetBooking.api.Models
-{
+﻿namespace VetBooking.api.Models;
+
     public class Appointment
     {
         public int Id { get; set; }
@@ -17,6 +17,5 @@
         public Vet Vet { get; set; } = null!;
 
         public int AppointmentTypeId { get; set; }
-        public AppointmentType AppointmentType { get; set; } = null!;
     }
-}
+

@@ -1,5 +1,5 @@
-﻿namespace VetBooking.api.Models
-{
+﻿namespace VetBooking.api.Models;
+
     public class Owner
     {
         public int Id { get; set; }
@@ -8,4 +8,3 @@
         public string PhoneNumber { get; set; } = string.Empty;
         public List<Pet> Pets { get; set; } = new();
     }
-}
