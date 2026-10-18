@@ -1,6 +1,6 @@
 ﻿namespace VetBooking.api.Dtos;
 
-    public class CreateAppointmentType
+    public class CreateAppointmentTypeRequest
     {
         public string Name { get; set; } = string.Empty;
         public int DurationInMinutes { get; set; }
