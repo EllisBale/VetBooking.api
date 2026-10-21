@@ -1,5 +1,4 @@
 ﻿namespace VetBooking.api.Data;
-
 using Microsoft.EntityFrameworkCore;
 using VetBooking.api.Models;
 
