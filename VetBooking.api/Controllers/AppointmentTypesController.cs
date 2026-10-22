@@ -33,6 +33,17 @@ namespace VetBooking.api.Controllers
             }
             return Ok(appointmentType);
         }
-        
+
+
+        [HttpPost]
+
+        public async Task<ActionResult<AppointmentTypeResponse>> CreateAppointmentType(CreateAppointmentTypeRequest request)
+        {
+            var createdAppointmentType = await service.CreateAsync(request);
+
+            return CreatedAtAction(nameof(GetAllAppointmentTypesById), new { id = createdAppointmentType.Id }, createdAppointmentType);
+
+        }
+
     }
 }
