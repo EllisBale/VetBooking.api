@@ -20,5 +20,19 @@ namespace VetBooking.api.Controllers
 
             return Ok(appointmentTypes);
         }
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AppointmentTypeResponse>> GetAllAppointmentTypesById(int id)
+        {
+            var appointmentType = await service.GetByIdAsync(id);
+
+            if (appointmentType == null)
+            {
+                return NotFound($"Appointment type with ID {id} not found.");
+            }
+            return Ok(appointmentType);
+        }
+        
     }
 }
