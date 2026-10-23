@@ -28,18 +28,18 @@ namespace VetBooking.api.Services;
                     DurationInMinutes = a.DurationInMinutes,
                     Price = a.Price
                 }).FirstOrDefaultAsync();
-                
-        public async Task<AppointmentTypeResponse> CreateAsync(CreateAppointmentTypeRequest request)
+
+    public async Task<AppointmentTypeResponse> CreateAsync(CreateAppointmentTypeRequest request)
+    {
+        var appointmentType = new AppointmentType
         {
-            var appointmentType = new AppointmentType
-            {
-                Name = request.Name,
-                DurationInMinutes = request.DurationInMinutes,
-                Price = request.Price
-            };
+            Name = request.Name,
+            DurationInMinutes = request.DurationInMinutes,
+            Price = request.Price
+        };
 
         context.AppointmentTypes.Add(appointmentType);
-            await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return new AppointmentTypeResponse
         {
@@ -49,5 +49,23 @@ namespace VetBooking.api.Services;
             Price = appointmentType.Price
         };
     }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var appointmentType = await context.AppointmentTypes.FindAsync(id);
+
+        if (appointmentType is null)
+        {
+            return false;
+        }
+
+        context.AppointmentTypes.Remove(appointmentType);
+        await context.SaveChangesAsync();
+
+        return true;
     }
 
+
+    }
+
+    

@@ -27,7 +27,7 @@ namespace VetBooking.api.Controllers
         {
             var appointmentType = await service.GetByIdAsync(id);
 
-            if (appointmentType == null)
+            if (appointmentType is null)
             {
                 return NotFound($"Appointment type with ID {id} not found.");
             }
@@ -43,6 +43,32 @@ namespace VetBooking.api.Controllers
 
             return CreatedAtAction(nameof(GetAllAppointmentTypesById), new { id = createdAppointmentType.Id }, createdAppointmentType);
 
+        }
+
+
+
+        [HttpDelete("{id}")]
+
+        public async Task<ActionResult<AppointmentTypeResponse>> DeleteAppointmentType(int id)
+        {
+            var appointmentType = await service.GetByIdAsync(id);
+
+
+            if (appointmentType is null)
+            {
+                return NotFound("Appointment Type Not Found.");
+            }
+
+
+            var deleted = await service.DeleteAsync(id);
+
+
+            if (!deleted)
+            {
+                return NotFound("Appointment Type Not Found.");
+            }
+
+            return Ok(appointmentType);
         }
 
     }

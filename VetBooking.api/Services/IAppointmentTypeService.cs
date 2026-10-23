@@ -10,5 +10,7 @@ namespace VetBooking.api.Services;
 
         Task<AppointmentTypeResponse> CreateAsync(CreateAppointmentTypeRequest request);
 
+        Task<bool> DeleteAsync(int id);
+
 }
 
