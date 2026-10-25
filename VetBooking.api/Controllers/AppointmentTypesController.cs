@@ -71,5 +71,19 @@ namespace VetBooking.api.Controllers
             return Ok(appointmentType);
         }
 
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAppointmentType(int id, UpdateAppointmentTypeRequest request)
+        {
+            var updated = await service.UpdateAsync(id, request);
+
+            if (!updated)
+            {
+                return NotFound("Appointment Type Not Found.");
+            }
+
+            return NoContent();
+        }
+
     }
 }

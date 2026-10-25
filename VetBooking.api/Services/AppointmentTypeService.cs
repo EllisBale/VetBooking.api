@@ -29,41 +29,60 @@ namespace VetBooking.api.Services;
                     Price = a.Price
                 }).FirstOrDefaultAsync();
 
-    public async Task<AppointmentTypeResponse> CreateAsync(CreateAppointmentTypeRequest request)
-    {
-        var appointmentType = new AppointmentType
+        public async Task<AppointmentTypeResponse> CreateAsync(CreateAppointmentTypeRequest request)
         {
-            Name = request.Name,
-            DurationInMinutes = request.DurationInMinutes,
-            Price = request.Price
-        };
+            var appointmentType = new AppointmentType
+            {
+                Name = request.Name,
+                DurationInMinutes = request.DurationInMinutes,
+                Price = request.Price
+            };
 
-        context.AppointmentTypes.Add(appointmentType);
-        await context.SaveChangesAsync();
+            context.AppointmentTypes.Add(appointmentType);
+            await context.SaveChangesAsync();
 
-        return new AppointmentTypeResponse
-        {
-            Id = appointmentType.Id,
-            Name = appointmentType.Name,
-            DurationInMinutes = appointmentType.DurationInMinutes,
-            Price = appointmentType.Price
-        };
-    }
-
-    public async Task<bool> DeleteAsync(int id)
-    {
-        var appointmentType = await context.AppointmentTypes.FindAsync(id);
-
-        if (appointmentType is null)
-        {
-            return false;
+            return new AppointmentTypeResponse
+            {
+                Id = appointmentType.Id,
+                Name = appointmentType.Name,
+                DurationInMinutes = appointmentType.DurationInMinutes,
+                Price = appointmentType.Price
+            };
         }
 
-        context.AppointmentTypes.Remove(appointmentType);
-        await context.SaveChangesAsync();
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var appointmentType = await context.AppointmentTypes.FindAsync(id);
 
-        return true;
-    }
+            if (appointmentType is null)
+            {
+                return false;
+            }
+
+            context.AppointmentTypes.Remove(appointmentType);
+            await context.SaveChangesAsync();
+
+            return true;
+        }
+
+
+        public async Task<bool> UpdateAsync(int id, UpdateAppointmentTypeRequest request)
+        {
+            var appointmentType = await context.AppointmentTypes.FindAsync(id);
+
+            if (appointmentType is null)
+            {
+                return false;
+            }
+
+
+            appointmentType.Name = request.Name;
+            appointmentType.DurationInMinutes = request.DurationInMinutes;
+            appointmentType.Price = request.Price;
+
+            await context.SaveChangesAsync();
+            return true;
+        }
 
 
     }
