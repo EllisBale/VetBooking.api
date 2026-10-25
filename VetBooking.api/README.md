@@ -124,6 +124,7 @@ erDiagram
 | `GET` | `/api/AppointmentTypes/{id}` | Get one appointment type | `200 OK` / `404 Not Found` |
 | `POST` | `/api/AppointmentTypes` | Create an appointment type | `201 Created` / `400 Bad Request` |
 | `DELETE` | `/api/AppointmentTypes/{id}` | Delete an appointment type | `204 No Content` / `404 Not Found` |
+|`PUT` | `/api/AppointmentTypes/{id}` | Update an appointment type | `200 OK` / `404 Not Found` |
 
 **Example request**
 
