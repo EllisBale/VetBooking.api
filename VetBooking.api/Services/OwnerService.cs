@@ -17,4 +17,16 @@ public class OwnerService(AppDbContext context) : IOwnerService
 
              })
             .ToListAsync();
+
+    public async Task<OwnerResponse?> GetByIdAsync(int id)
+        => await context.Owners
+            .Where(owner => owner.Id == id)
+            .Select(owner => new OwnerResponse
+            {
+                Id = owner.Id,
+                Name = owner.Name,
+                Address = owner.Address,
+                PhoneNumber = owner.PhoneNumber
+            }).FirstOrDefaultAsync();
+            
 }
