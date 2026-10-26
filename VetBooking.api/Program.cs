@@ -14,6 +14,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IAppointmentTypeService, AppointmentTypeService>();
 
+builder.Services.AddScoped<IOwnerService, OwnerService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

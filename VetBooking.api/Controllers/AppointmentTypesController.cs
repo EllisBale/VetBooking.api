@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using VetBooking.api.Dtos;
 using VetBooking.api.Services;
 
-namespace VetBooking.api.Controllers
-{
+namespace VetBooking.api.Controllers;
+
     [ApiController]
     [Route("api/[controller]")]
     public class AppointmentTypesController(IAppointmentTypeService service) : ControllerBase
@@ -86,4 +86,3 @@ namespace VetBooking.api.Controllers
         }
 
     }
-}
