@@ -236,7 +236,7 @@ dotnet test
 - [x] Project setup, EF Core and SQL Server
 - [x] Domain models and initial migration with seed data
 - [x] Appointment types: get all, get by ID, create, delete
-- [ ] Appointment types: update
+- [x] Appointment types: update
 - [ ] Owners and pets
 - [ ] Vets and working hours
 - [ ] Appointments with calculated end time
