@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VetBooking.api.Data;
 using VetBooking.api.Dtos;
+using VetBooking.api.Models;
 
 namespace VetBooking.api.Services;
 
@@ -28,5 +29,27 @@ public class OwnerService(AppDbContext context) : IOwnerService
                 Address = owner.Address,
                 PhoneNumber = owner.PhoneNumber
             }).FirstOrDefaultAsync();
+
+
+    public async Task<OwnerResponse> CreateAsync(CreateOwnerRequest request)
+    {
+        var owner = new Owner
+        {
+            Name = request.Name,
+            Address = request.Address,
+            PhoneNumber = request.PhoneNumber
+        };
+
+        context.Owners.Add(owner);
+        await context.SaveChangesAsync();
+
+        return new OwnerResponse
+        {
+            Id = owner.Id,
+            Name = owner.Name,
+            Address = owner.Address,
+            PhoneNumber = owner.PhoneNumber
+        };
+    }
             
 }
