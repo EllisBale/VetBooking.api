@@ -19,6 +19,19 @@ namespace VetBooking.api.Controllers;
             }
 
             return Ok(owners);
-    }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<OwnerResponse?>> GetById(int id)
+        {
+            var owner = await service.GetByIdAsync(id);
+
+            if (owner is null)
+            {
+                return NotFound($"Owner with ID {id} not found.");
+            }
+
+            return Ok(owner);
+        }
     }
   
