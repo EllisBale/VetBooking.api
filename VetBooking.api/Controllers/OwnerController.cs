@@ -33,5 +33,16 @@ namespace VetBooking.api.Controllers;
 
             return Ok(owner);
         }
+
+
+
+        [HttpPost]
+
+        public async Task<ActionResult<OwnerResponse>> CreateOwner(CreateOwnerRequest request)
+        {
+        var createdOwner = await service.CreateAsync(request);
+
+        return CreatedAtAction(nameof(GetById), new { id = createdOwner.Id }, createdOwner);
+    }
     }
   
