@@ -51,5 +51,21 @@ public class OwnerService(AppDbContext context) : IOwnerService
             PhoneNumber = owner.PhoneNumber
         };
     }
+
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var owner = await context.Owners.FindAsync(id);
+
+        if (owner is null) {
+
+            return false;
+        }
+
+        context.Owners.Remove(owner);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
             
 }

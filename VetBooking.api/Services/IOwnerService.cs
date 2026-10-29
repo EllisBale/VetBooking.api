@@ -3,10 +3,12 @@ namespace VetBooking.api.Services;
 
     public interface IOwnerService
     {
-        public Task<List<OwnerResponse>> GetAllAsync();
+        Task<List<OwnerResponse>> GetAllAsync();
 
-        public Task<OwnerResponse?> GetByIdAsync(int id);
+        Task<OwnerResponse?> GetByIdAsync(int id);
 
-        public Task<OwnerResponse> CreateAsync(CreateOwnerRequest request);
+        Task<OwnerResponse> CreateAsync(CreateOwnerRequest request);
+
+        Task<bool> DeleteAsync(int id);
     }
 
