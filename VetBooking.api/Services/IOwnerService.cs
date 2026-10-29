@@ -10,5 +10,9 @@ namespace VetBooking.api.Services;
         Task<OwnerResponse> CreateAsync(CreateOwnerRequest request);
 
         Task<bool> DeleteAsync(int id);
-    }
+
+        Task<bool> UpdateAsync(int id, UpdateOwnerRequest request);
+
+
+}
 
