@@ -65,7 +65,29 @@ namespace VetBooking.api.Controllers;
             }
 
             return NoContent();
-    }
+        }
+
+
+        [HttpPut("{id}")]
+
+        public async Task<IActionResult> UpdateOwner(int id, UpdateOwnerRequest request)
+        {
+            var owner = await service.GetByIdAsync(id);
+
+            if (owner is null)
+            {
+                return NotFound("Owner Not Found.");
+            }
+
+            var updated = await service.UpdateAsync(id, request);
+
+            if (!updated)
+            {
+                return BadRequest("Failed to update Owner.");
+            }
+
+            return NoContent();
+        }
 
 
     }
