@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VetBooking.api.Dtos
-{
+namespace VetBooking.api.Dtos;
+
     public class UpdateOwnerRequest
     {
         [Required]
@@ -19,4 +19,4 @@ namespace VetBooking.api.Dtos
         public string PhoneNumber { get; set; } = string.Empty;
 
     }
-}
+

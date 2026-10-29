@@ -67,5 +67,27 @@ public class OwnerService(AppDbContext context) : IOwnerService
 
         return true;
     }
-            
+
+
+    public async Task<bool> UpdateAsync(int id, UpdateOwnerRequest request)
+    {
+        var owner = await context.Owners.FindAsync(id);
+
+        if (owner is null)
+        {
+            return false;
+        }
+
+        owner.Name = request.Name;
+        owner.Address = request.Address;
+        owner.PhoneNumber = request.PhoneNumber;
+
+        await context.SaveChangesAsync();
+
+        return true;
+
+
+    }
+
+
 }
