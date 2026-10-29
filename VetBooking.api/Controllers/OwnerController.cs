@@ -40,9 +40,33 @@ namespace VetBooking.api.Controllers;
 
         public async Task<ActionResult<OwnerResponse>> CreateOwner(CreateOwnerRequest request)
         {
-        var createdOwner = await service.CreateAsync(request);
+            var createdOwner = await service.CreateAsync(request);
 
-        return CreatedAtAction(nameof(GetById), new { id = createdOwner.Id }, createdOwner);
+            return CreatedAtAction(nameof(GetById), new { id = createdOwner.Id }, createdOwner);
+
+        }
+
+        [HttpDelete("{id}")]
+
+        public async Task<IActionResult> DeleteOwner(int id)
+        {
+            var owner = await service.GetByIdAsync(id);
+
+            if (owner is null)
+            {
+                return NotFound("Owner Not Found.");
+            }
+
+            var deleted = await service.DeleteAsync(id);
+
+            if (!deleted)
+            {
+                return BadRequest("Failed to delete Owner.");
+            }
+
+            return NoContent();
     }
+
+
     }
   

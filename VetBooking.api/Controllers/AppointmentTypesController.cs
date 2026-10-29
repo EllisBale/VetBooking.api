@@ -49,7 +49,7 @@ namespace VetBooking.api.Controllers;
 
         [HttpDelete("{id}")]
 
-        public async Task<ActionResult<AppointmentTypeResponse>> DeleteAppointmentType(int id)
+        public async Task<IActionResult> DeleteAppointmentType(int id)
         {
             var appointmentType = await service.GetByIdAsync(id);
 
@@ -65,10 +65,10 @@ namespace VetBooking.api.Controllers;
 
             if (!deleted)
             {
-                return NotFound("Appointment Type Not Found.");
+                return BadRequest("Failed to delete Appointment Type.");
             }
 
-            return Ok(appointmentType);
+            return NoContent();
         }
 
 
