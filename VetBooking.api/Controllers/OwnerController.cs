@@ -13,7 +13,7 @@ namespace VetBooking.api.Controllers;
         {
             var owners = await service.GetAllAsync();
 
-            if (owners == null || owners.Count == 0)
+            if (owners is null || owners.Count is 0)
             {
                 return NotFound("No Owners found.");
             }

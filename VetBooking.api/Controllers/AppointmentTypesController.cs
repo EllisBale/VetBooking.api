@@ -13,7 +13,7 @@ namespace VetBooking.api.Controllers;
         {
             var appointmentTypes = await service.GetAllAsync();
 
-            if (appointmentTypes == null || appointmentTypes.Count == 0)
+            if (appointmentTypes is null || appointmentTypes.Count is 0)
             {
                 return NotFound("No appointment types found.");
             }
