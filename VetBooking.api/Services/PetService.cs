@@ -19,6 +19,21 @@ namespace VetBooking.api.Services;
                     })
                     .ToListAsync();
 
+
+        public async Task<PetResponse?> GetByIdAsync(int id)
+            => await context.Pets
+                    .Where(pet => pet.Id == id)
+                    .Select(pet => new PetResponse
+                    {
+                        Id = pet.Id,
+                        Name = pet.Name,
+                        Species = pet.Species,
+                        Breed = pet.Breed,
+                        DateOfBirth = pet.DateOfBirth,
+                        OwnerId = pet.OwnerId
+                    })
+                    .FirstOrDefaultAsync();
+
         
     }
 
