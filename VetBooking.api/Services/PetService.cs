@@ -34,6 +34,40 @@ namespace VetBooking.api.Services;
                     })
                     .FirstOrDefaultAsync();
 
+       public async Task<bool> DeleteAsync(int id)
+       {
+            var pet = await context.Pets.FindAsync(id);
+
+            if (pet is null)
+            {
+                return false;
+            }
+
+            context.Pets.Remove(pet);
+            await context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> UpdateAsync(int id, UpdatePetRequest request)
+        {
+            var pet = await context.Pets.FindAsync(id);
+
+            if (pet is null)
+            {
+                return false;
+            }
+
+            pet.Name = request.Name;
+            pet.Species = request.Species;
+            pet.Breed = request.Breed;
+            pet.DateOfBirth = request.DateOfBirth;
+            pet.OwnerId = request.OwnerId;
+
+            await context.SaveChangesAsync();
+
+            return true;
+        }
         
     }
 
