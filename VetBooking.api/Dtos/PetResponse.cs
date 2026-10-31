@@ -11,7 +11,7 @@
 
         public DateOnly DateOfBirth { get; set; }
 
-        public int Owner { get; set; }
+        public int OwnerId { get; set; }
 
     }
 
