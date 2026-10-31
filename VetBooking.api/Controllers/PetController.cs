@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using VetBooking.api.Dtos;
 using VetBooking.api.Services;
 
@@ -36,6 +35,17 @@ public class PetController(IPetService service) : ControllerBase
         return Ok(pet);
 
     }
+
+
+    [HttpPost]
+
+    public async Task<ActionResult<PetResponse>> CreatePet(CreatePetRequest request)
+    {
+        var createdPet = await service.CreateAsync(request);
+
+        return CreatedAtAction(nameof(GetById), new { id = createdPet.Id }, createdPet);
+    }
+
     
 }
 
