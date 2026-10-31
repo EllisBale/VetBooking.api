@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VetBooking.api.Data;
 using VetBooking.api.Dtos;
+using VetBooking.api.Models;
 
 namespace VetBooking.api.Services;
 
@@ -33,6 +34,32 @@ namespace VetBooking.api.Services;
                         OwnerId = pet.OwnerId
                     })
                     .FirstOrDefaultAsync();
+
+
+        public async Task<PetResponse> CreateAsync(CreatePetRequest request)
+        {
+            var pet = new Pet
+            {
+                Name = request.Name,
+                Species = request.Species,
+                Breed = request.Breed,
+                DateOfBirth = request.DateOfBirth,
+                OwnerId = request.OwnerId
+            };
+
+            context.Pets.Add(pet);
+            await context.SaveChangesAsync();
+
+            return new PetResponse
+            {
+                Name = pet.Name,
+                Species = pet.Species,
+                Breed = pet.Breed,
+                DateOfBirth = pet.DateOfBirth,
+                OwnerId = pet.OwnerId
+            };
+
+        }
 
        public async Task<bool> DeleteAsync(int id)
        {
