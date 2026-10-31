@@ -16,6 +16,8 @@ builder.Services.AddScoped<IAppointmentTypeService, AppointmentTypeService>();
 
 builder.Services.AddScoped<IOwnerService, OwnerService>();
 
+builder.Services.AddScoped<IPetService, PetService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
