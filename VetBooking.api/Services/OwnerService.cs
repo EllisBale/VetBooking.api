@@ -13,6 +13,7 @@ public class OwnerService(AppDbContext context) : IOwnerService
              {
                  Id = owner.Id,
                  Name = owner.Name,
+                 Email = owner.Email,
                  Address = owner.Address,
                  PhoneNumber = owner.PhoneNumber
 
@@ -26,6 +27,7 @@ public class OwnerService(AppDbContext context) : IOwnerService
             {
                 Id = owner.Id,
                 Name = owner.Name,
+                Email = owner.Email,
                 Address = owner.Address,
                 PhoneNumber = owner.PhoneNumber
             }).FirstOrDefaultAsync();
@@ -36,6 +38,7 @@ public class OwnerService(AppDbContext context) : IOwnerService
         var owner = new Owner
         {
             Name = request.Name,
+            Email = request.Email,
             Address = request.Address,
             PhoneNumber = request.PhoneNumber
         };
@@ -47,6 +50,7 @@ public class OwnerService(AppDbContext context) : IOwnerService
         {
             Id = owner.Id,
             Name = owner.Name,
+            Email = owner.Email,
             Address = owner.Address,
             PhoneNumber = owner.PhoneNumber
         };
@@ -79,6 +83,7 @@ public class OwnerService(AppDbContext context) : IOwnerService
         }
 
         owner.Name = request.Name;
+        owner.Email = request.Email;
         owner.Address = request.Address;
         owner.PhoneNumber = request.PhoneNumber;
 
