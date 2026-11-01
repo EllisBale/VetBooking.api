@@ -46,6 +46,28 @@ public class PetController(IPetService service) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = createdPet.Id }, createdPet);
     }
 
+
+    [HttpDelete("{id}")]
+
+    public async Task<IActionResult> DeletePet(int id)
+    {
+        var pet = await service.GetByIdAsync(id);
+
+        if (pet is null)
+        {
+            return NotFound("Pet Not Found.");
+        }
+
+        var deleted = await service.DeleteAsync(id);
+
+        if (!deleted)
+        {
+            return BadRequest("Failed to delete Pet");
+        }
+
+        return NoContent();
+    }
+
     
 }
 
