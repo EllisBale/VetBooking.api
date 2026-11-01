@@ -68,6 +68,27 @@ public class PetController(IPetService service) : ControllerBase
         return NoContent();
     }
 
-    
+
+    [HttpPut("{id}")]
+
+    public async Task<IActionResult> UpdatePet(int id, UpdatePetRequest request)
+    {
+        var pet = await service.GetByIdAsync(id);
+
+        if (pet is null)
+        {
+            return NotFound("Pet Not Found.");
+        }
+
+        var updated = await service.UpdateAsync(id, request);
+        
+        if (!updated)
+        {
+            return BadRequest("Failed to update Pet");
+        }
+
+        return NoContent();
+    }
+
 }
 
