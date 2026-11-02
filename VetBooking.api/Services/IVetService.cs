@@ -9,5 +9,7 @@ namespace VetBooking.api.Services;
 
         Task<VetResponse> CreateAsync(CreateVetRequest request);
 
+        Task<bool> DeleteAsync(int id);
+
     }
 

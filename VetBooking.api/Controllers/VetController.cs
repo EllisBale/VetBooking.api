@@ -43,5 +43,27 @@ public class VetController(IVetService service) : ControllerBase
 
         return CreatedAtAction(nameof(GetById), new { id = createdVet.Id }, createdVet);
     }
+
+    [HttpDelete("{id}")]
+
+    public async Task<IActionResult> DeleteVet(int id)
+    {
+        var vet = await service.GetByIdAsync(id);
+
+        if (vet is null)
+        {
+            return NotFound("Vet Not Found.");
+        }
+
+        var deleted = await service.DeleteAsync(id);
+
+        if (!deleted)
+        {
+            return BadRequest("Vet could not be deleted.");
+        }
+
+        return NoContent();
+    }
+
 }
 

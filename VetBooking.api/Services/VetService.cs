@@ -47,6 +47,21 @@ public class VetService(AppDbContext context) : IVetService
             Specialisation = vet.Specialisation
         };
     }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var vet = await context.Vets.FindAsync(id);
+
+        if (vet is null)
+        {
+            return false;
+        }
+
+        context.Vets.Remove(vet);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
 }
 
 
