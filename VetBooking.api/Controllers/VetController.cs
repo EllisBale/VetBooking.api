@@ -65,5 +65,27 @@ public class VetController(IVetService service) : ControllerBase
         return NoContent();
     }
 
+
+    [HttpPut("{id}")]
+
+    public async Task<IActionResult> UpdateVet(int id, UpdateVetRequest request)
+    {
+        var vet = await service.GetByIdAsync(id);
+
+        if (vet is null)
+        {
+            return NotFound("Vet Not Found.");
+        }
+
+        var updated = await service.UpdateAsync(id, request);
+
+        if (!updated)
+        {
+            return BadRequest("Vet could not be updated.");
+        }
+
+        return NoContent();
+    }
+
 }
 

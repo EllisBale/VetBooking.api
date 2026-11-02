@@ -62,6 +62,24 @@ public class VetService(AppDbContext context) : IVetService
 
         return true;
     }
+
+
+    public async Task<bool> UpdateAsync(int id, UpdateVetRequest request)
+    {
+        var vet = await context.Vets.FindAsync(id);
+
+        if (vet is null)
+        {
+            return false;
+        }
+
+        vet.Name = request.Name;
+        vet.Specialisation = request.Specialisation;
+
+        await context.SaveChangesAsync();
+
+        return true;
+    }
 }
 
 

@@ -11,5 +11,7 @@ namespace VetBooking.api.Services;
 
         Task<bool> DeleteAsync(int id);
 
-    }
+        Task<bool> UpdateAsync(int id, UpdateVetRequest request);
+
+}
 
