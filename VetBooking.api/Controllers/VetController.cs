@@ -4,23 +4,23 @@ using VetBooking.api.Services;
 
 namespace VetBooking.api.Controllers;
 
-    [ApiController]
-    [Route("api/[controller]")]
+[ApiController]
+[Route("api/[controller]")]
 
-    public class VetController(IVetService service) : ControllerBase
+public class VetController(IVetService service) : ControllerBase
+{
+    [HttpGet]
+    public async Task<ActionResult<List<VetResponse>>> GetAllVets()
     {
-        [HttpGet]
-        public async Task<ActionResult<List <VetResponse>>> GetAllVets()
-        {
-            var vets = await service.GetAllAsync();
-            
-            if (vets is null || vets.Count is 0)
-            {
-                return NotFound("No Vets found.");
-            }
+        var vets = await service.GetAllAsync();
 
-            return Ok(vets);
+        if (vets is null || vets.Count is 0)
+        {
+            return NotFound("No Vets found.");
         }
+
+        return Ok(vets);
+    }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<VetResponse?>> GetById(int id)
@@ -36,5 +36,12 @@ namespace VetBooking.api.Controllers;
     }
 
 
+    [HttpPost]
+    public async Task<ActionResult<VetResponse>> CreateVet(CreateVetRequest request)
+    {
+        var createdVet = await service.CreateAsync(request);
+
+        return CreatedAtAction(nameof(GetById), new { id = createdVet.Id }, createdVet);
     }
+}
 

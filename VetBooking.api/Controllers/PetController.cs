@@ -45,7 +45,7 @@ public class PetController(IPetService service) : ControllerBase
 
         if (createdPet is null)
         {
-            return BadRequest("Owner not found.");
+            return BadRequest("Pet could not be created.");
         }
 
         return CreatedAtAction(nameof(GetById), new { id = createdPet.Id }, createdPet);
