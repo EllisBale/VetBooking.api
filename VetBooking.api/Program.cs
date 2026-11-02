@@ -18,6 +18,8 @@ builder.Services.AddScoped<IOwnerService, OwnerService>();
 
 builder.Services.AddScoped<IPetService, PetService>();
 
+builder.Services.AddScoped<IVetService, VetService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
