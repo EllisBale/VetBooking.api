@@ -8,7 +8,7 @@ namespace VetBooking.api.Services;
 
         Task<PetResponse?> GetByIdAsync(int id);
 
-        Task<PetResponse> CreateAsync(CreatePetRequest request);
+        Task<PetResponse?> CreateAsync(CreatePetRequest request);
 
         Task<bool> DeleteAsync(int id);
 

@@ -36,8 +36,16 @@ namespace VetBooking.api.Services;
                     .FirstOrDefaultAsync();
 
 
-        public async Task<PetResponse> CreateAsync(CreatePetRequest request)
+        public async Task<PetResponse?> CreateAsync(CreatePetRequest request)
         {
+
+            var ownerExists = await context.Owners.AnyAsync(owner => owner.Id == request.OwnerId);
+
+            if (!ownerExists)
+            {
+                return null;
+            }
+
             var pet = new Pet
             {
                 Name = request.Name,
@@ -48,17 +56,16 @@ namespace VetBooking.api.Services;
             };
 
             context.Pets.Add(pet);
-            await context.SaveChangesAsync();
+                 await context.SaveChangesAsync();
 
-            return new PetResponse
-            {
-                Name = pet.Name,
-                Species = pet.Species,
-                Breed = pet.Breed,
-                DateOfBirth = pet.DateOfBirth,
-                OwnerId = pet.OwnerId
-            };
-
+                 return new PetResponse
+                 {
+                   Name = pet.Name,
+                   Species = pet.Species,
+                   Breed = pet.Breed,
+                   DateOfBirth = pet.DateOfBirth,
+                   OwnerId = pet.OwnerId
+                 };
         }
 
        public async Task<bool> DeleteAsync(int id)
@@ -79,10 +86,11 @@ namespace VetBooking.api.Services;
         public async Task<bool> UpdateAsync(int id, UpdatePetRequest request)
         {
             var pet = await context.Pets.FindAsync(id);
+            var ownerExists = await context.Owners.AnyAsync(owner => owner.Id == request.OwnerId);
 
-            if (pet is null)
+            if (pet is null || !ownerExists)
             {
-                return false;
+               return false;
             }
 
             pet.Name = request.Name;

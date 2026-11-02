@@ -43,6 +43,11 @@ public class PetController(IPetService service) : ControllerBase
     {
         var createdPet = await service.CreateAsync(request);
 
+        if (createdPet is null)
+        {
+            return BadRequest("Owner not found.");
+        }
+
         return CreatedAtAction(nameof(GetById), new { id = createdPet.Id }, createdPet);
     }
 
@@ -81,7 +86,7 @@ public class PetController(IPetService service) : ControllerBase
         }
 
         var updated = await service.UpdateAsync(id, request);
-        
+
         if (!updated)
         {
             return BadRequest("Failed to update Pet");
@@ -92,3 +97,4 @@ public class PetController(IPetService service) : ControllerBase
 
 }
 
+ 
