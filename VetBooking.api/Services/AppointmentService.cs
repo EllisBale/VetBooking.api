@@ -38,5 +38,43 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
 
             }).ToListAsync();
     }
+
+
+    public async Task<AppointmentResponse?> GetByIdAsync(int id)
+    {
+        var appointment = await context.Appointments
+            .Include(a => a.Pet)
+            .Include(a => a.Vet)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+        if (appointment is null)
+        {
+            return null;
+        }
+
+        return new AppointmentResponse
+        {
+            Id = appointment.Id,
+            StartUtc = appointment.StartUtc,
+            EndUtc = appointment.EndUtc,
+            Status = new AppointmentStatusResponse { Status = appointment.Status },
+            Notes = appointment.Notes,
+            Pet = new PetResponse
+            {
+                Id = appointment.Pet.Id,
+                Name = appointment.Pet.Name,
+                Species = appointment.Pet.Species,
+                Breed = appointment.Pet.Breed,
+                DateOfBirth = appointment.Pet.DateOfBirth,
+                OwnerId = appointment.Pet.OwnerId
+            },
+            Vet = new VetResponse
+            {
+                Id = appointment.Vet.Id,
+                Name = appointment.Vet.Name,
+                Specialisation = appointment.Vet.Specialisation
+            }
+        };
+    }
 }
 
