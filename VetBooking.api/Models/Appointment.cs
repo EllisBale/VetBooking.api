@@ -10,12 +10,14 @@
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Booked;
 
         public string? Notes { get; set; }
-
+        
+        public int PetId { get; set; }
         public Pet Pet { get; set; } = null!;
 
         public int VetId { get; set; }
         public Vet Vet { get; set; } = null!;
 
         public int AppointmentTypeId { get; set; }
-    }
+        public AppointmentType AppointmentType { get; set; } = null!;
+}
 

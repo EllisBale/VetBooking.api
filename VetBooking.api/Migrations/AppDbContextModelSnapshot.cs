@@ -83,6 +83,43 @@ namespace VetBooking.api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppointmentTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DurationInMinutes = 30,
+                            Name = "Checkup",
+                            Price = 50.00m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DurationInMinutes = 15,
+                            Name = "Vaccination",
+                            Price = 30.00m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DurationInMinutes = 120,
+                            Name = "Surgery",
+                            Price = 500.00m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DurationInMinutes = 60,
+                            Name = "Dental Cleaning",
+                            Price = 150.00m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DurationInMinutes = 45,
+                            Name = "Emergency",
+                            Price = 200.00m
+                        });
                 });
 
             modelBuilder.Entity("VetBooking.api.Models.Owner", b =>
@@ -223,7 +260,7 @@ namespace VetBooking.api.Migrations
 
             modelBuilder.Entity("VetBooking.api.Models.Appointment", b =>
                 {
-                    b.HasOne("VetBooking.api.Models.AppointmentType", null)
+                    b.HasOne("VetBooking.api.Models.AppointmentType", "AppointmentType")
                         .WithMany("Appointments")
                         .HasForeignKey("AppointmentTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -240,6 +277,8 @@ namespace VetBooking.api.Migrations
                         .HasForeignKey("VetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AppointmentType");
 
                     b.Navigation("Pet");
 

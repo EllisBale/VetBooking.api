@@ -10,7 +10,9 @@ public class AppointmentResponse
 
     public AppointmentStatusResponse Status { get; set; } = new AppointmentStatusResponse();
 
-    public string? Notes { get; set; } 
+    public string? Notes { get; set; }
+
+    public AppointmentTypeResponse AppointmentType { get; set; } = null!;
 
     public PetResponse Pet { get; set; } = null!;
 

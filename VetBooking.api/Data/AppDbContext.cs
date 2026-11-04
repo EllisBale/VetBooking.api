@@ -39,6 +39,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 EndTime = new TimeOnly(17, 0)
             }
         );
+
+        modelBuilder.Entity<AppointmentType>().HasData(
+            new AppointmentType { Id = 1, Name = "Checkup", DurationInMinutes = 30, Price = 50.00m },
+            new AppointmentType { Id = 2, Name = "Vaccination", DurationInMinutes = 15, Price = 30.00m },
+            new AppointmentType { Id = 3, Name = "Surgery", DurationInMinutes = 120, Price = 500.00m },
+            new AppointmentType { Id = 4, Name = "Dental Cleaning", DurationInMinutes = 60, Price = 150.00m },
+            new AppointmentType { Id = 5, Name = "Emergency", DurationInMinutes = 45, Price = 200.00m }
+        );
     }
 
 

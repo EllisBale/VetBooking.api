@@ -7,5 +7,8 @@ namespace VetBooking.api.Services;
         Task<List<AppointmentResponse>> GetAllAsync();
 
         Task<AppointmentResponse?> GetByIdAsync(int id);
+
+        Task<AppointmentResponse> CreateAsync(CreateAppointmentRequest request);
+
     }
 

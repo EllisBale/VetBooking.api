@@ -35,6 +35,21 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
         return Ok(appointment);
     }
 
+    [HttpPost]
+
+    public async Task<ActionResult<AppointmentResponse>> CreateAppointment([FromBody] CreateAppointmentRequest request)
+    {
+
+        if (request is null)
+        {
+            return BadRequest("Appointment request body cannot be null.");
+        }
+
+
+        var createdAppointment = await service.CreateAsync(request);
+        return CreatedAtAction(nameof(GetAppointmentById), new { id = createdAppointment.Id }, createdAppointment);
+    }
+
 
 }
 
