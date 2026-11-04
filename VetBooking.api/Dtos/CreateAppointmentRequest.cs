@@ -17,12 +17,12 @@ namespace VetBooking.api.Dtos;
         public string? Notes { get; set; }
 
         [Required]
-        public int PetId { get; set; }
+        public int? PetId { get; set; }
 
         [Required]
-        public int VetId { get; set; }
+        public int? VetId { get; set; }
 
         [Required]
-        public int AppointmentTypeId { get; set; }
+        public int? AppointmentTypeId { get; set; }
     }
 

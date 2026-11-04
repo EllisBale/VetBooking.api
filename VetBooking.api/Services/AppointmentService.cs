@@ -98,17 +98,37 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
         };
     }
 
-    public async Task<AppointmentResponse> CreateAsync(CreateAppointmentRequest request)
+    public async Task<AppointmentResponse?> CreateAsync(CreateAppointmentRequest request)
     {
+
+        if (request is null)
+        {
+            throw new ArgumentException("Appointment request cannot be null.");
+        }
+
+
+        if (request.StartUtc >= request.EndUtc)
+        {
+            throw new ArgumentException("Start time must be before end time.");
+        }
+
+
+        if (request.PetId is null || request.PetId <= 0 ||
+            request.VetId is null || request.VetId <= 0 ||
+            request.AppointmentTypeId is null || request.AppointmentTypeId <= 0)
+        {
+            throw new ArgumentException("A valid PetId, VetId, and AppointmentTypeId are required.");
+        }
+
         var appointment = new Appointment
         {
             StartUtc = request.StartUtc,
             EndUtc = request.EndUtc,
             Status = request.Status.Status,
             Notes = request.Notes,
-            PetId = request.PetId,
-            VetId = request.VetId,
-            AppointmentTypeId = request.AppointmentTypeId
+            PetId = request.PetId ?? 0,
+            VetId = request.VetId ?? 0,
+            AppointmentTypeId = request.AppointmentTypeId ?? 0
         };
 
         context.Appointments.Add(appointment);

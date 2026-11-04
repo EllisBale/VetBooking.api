@@ -19,6 +19,6 @@ namespace VetBooking.api.Dtos;
 
         [Required]
         public DateOnly DateOfBirth { get; set; }
-        public int OwnerId { get; set; }
+        public int? OwnerId { get; set; }
     }
 

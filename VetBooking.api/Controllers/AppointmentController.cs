@@ -37,7 +37,7 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
 
     [HttpPost]
 
-    public async Task<ActionResult<AppointmentResponse>> CreateAppointment([FromBody] CreateAppointmentRequest request)
+    public async Task<ActionResult<AppointmentResponse?>> CreateAppointment([FromBody] CreateAppointmentRequest request)
     {
 
         if (request is null)
@@ -45,11 +45,22 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
             return BadRequest("Appointment request body cannot be null.");
         }
 
+        try
+        {
+            var createdAppointment = await service.CreateAsync(request);
 
-        var createdAppointment = await service.CreateAsync(request);
-        return CreatedAtAction(nameof(GetAppointmentById), new { id = createdAppointment.Id }, createdAppointment);
+            return CreatedAtAction(
+                nameof(GetAppointmentById),
+                new { id = createdAppointment?.Id },
+                createdAppointment);
+        }
+
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        
     }
-
 
 }
 

@@ -52,7 +52,7 @@ namespace VetBooking.api.Services;
                 Species = request.Species,
                 Breed = request.Breed,
                 DateOfBirth = request.DateOfBirth,
-                OwnerId = request.OwnerId
+                OwnerId = request.OwnerId ?? 0
             };
 
             context.Pets.Add(pet);
