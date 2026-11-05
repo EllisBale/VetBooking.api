@@ -1,4 +1,6 @@
-﻿namespace VetBooking.api.Dtos;
+﻿using VetBooking.api.Models;
+
+namespace VetBooking.api.Dtos;
 
 public class AppointmentResponse
 {
@@ -8,7 +10,7 @@ public class AppointmentResponse
 
     public DateTime EndUtc { get; set; }
 
-    public AppointmentStatusResponse Status { get; set; } = new AppointmentStatusResponse();
+    public AppointmentStatus Status { get; set; } = AppointmentStatus.Booked;
 
     public string? Notes { get; set; }
 

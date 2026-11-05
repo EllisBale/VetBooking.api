@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net.NetworkInformation;
+using VetBooking.api.Models;
 
 namespace VetBooking.api.Dtos;
 
@@ -11,7 +13,8 @@ namespace VetBooking.api.Dtos;
         public DateTime EndUtc { get; set; }
 
         [Required]
-        public AppointmentStatusResponse Status { get; set; } = new AppointmentStatusResponse();
+        [EnumDataType(typeof(AppointmentStatus), ErrorMessage = "The selected status value is invalid.")]
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Booked;
 
         [StringLength(256)]
         public string? Notes { get; set; }

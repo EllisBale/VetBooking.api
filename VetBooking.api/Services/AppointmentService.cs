@@ -19,7 +19,7 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
                 Id = app.Id,
                 StartUtc = app.StartUtc,
                 EndUtc = app.EndUtc,
-                Status = new AppointmentStatusResponse { Status = app.Status },
+                Status = app.Status,
                 Notes = app.Notes,
 
                 AppointmentType = new AppointmentTypeResponse
@@ -64,12 +64,14 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
             return null;
         }
 
+
+
         return new AppointmentResponse
         {
             Id = appointment.Id,
             StartUtc = appointment.StartUtc,
             EndUtc = appointment.EndUtc,
-            Status = new AppointmentStatusResponse { Status = appointment.Status },
+            Status = appointment.Status,
             Notes = appointment.Notes,
 
             AppointmentType = new AppointmentTypeResponse
@@ -106,7 +108,7 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
             throw new ArgumentException("Appointment request cannot be null.");
         }
 
-
+    
         if (request.StartUtc >= request.EndUtc)
         {
             throw new ArgumentException("Start time must be before end time.");
@@ -120,11 +122,30 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
             throw new ArgumentException("A valid PetId, VetId, and AppointmentTypeId are required.");
         }
 
+        var petExists = await context.Pets.AnyAsync(p => p.Id == request.PetId);
+        var vetExists = await context.Vets.AnyAsync(v => v.Id == request.VetId);
+        var appointmentTypeExists = await context.AppointmentTypes.AnyAsync(at => at.Id == request.AppointmentTypeId);
+
+        if (!petExists)
+        {
+            throw new ArgumentException($"Pet ID {request.PetId} does not exist.");
+        }
+
+        if (!vetExists)
+        {
+            throw new ArgumentException($"Vet ID {request.VetId} does not exist.");
+        }
+
+        if (!appointmentTypeExists)
+        {
+            throw new ArgumentException($"Appointment Type ID {request.AppointmentTypeId} does not exist.");
+        }
+
         var appointment = new Appointment
         {
             StartUtc = request.StartUtc,
             EndUtc = request.EndUtc,
-            Status = request.Status.Status,
+            Status = request.Status,
             Notes = request.Notes,
             PetId = request.PetId ?? 0,
             VetId = request.VetId ?? 0,

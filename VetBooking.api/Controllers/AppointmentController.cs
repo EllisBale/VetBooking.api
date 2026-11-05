@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VetBooking.api.Dtos;
 using VetBooking.api.Services;
 
@@ -48,6 +49,11 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
         try
         {
             var createdAppointment = await service.CreateAsync(request);
+
+            if (createdAppointment is null)
+            {
+                return NotFound($"Pet ID {request.PetId} does not exist.");
+            }
 
             return CreatedAtAction(
                 nameof(GetAppointmentById),
