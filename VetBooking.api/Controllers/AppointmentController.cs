@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using VetBooking.api.Dtos;
 using VetBooking.api.Services;
 

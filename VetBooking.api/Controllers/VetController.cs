@@ -87,5 +87,48 @@ public class VetController(IVetService service) : ControllerBase
         return NoContent();
     }
 
+
+    [HttpGet("{vetId}/working-hours")]
+    public async Task<ActionResult<List<WorkingHoursResponse>>> GetWorkingHours(int vetId)
+    {
+
+            var vetIdExist = await service.ExistsAsync(vetId);
+
+            if (!vetIdExist)
+            {
+                return NotFound($"Vet with ID {vetId} not found.");
+            }
+       
+            var workingHours = await service.GetWorkingHoursAsync(vetId);
+
+            if (workingHours is null)
+            {
+                return NotFound($"No working hours found for Vet with ID {vetId}.");
+            }
+
+            if (workingHours.Count == 0)
+            {
+                return NotFound($"No working hours found for Vet with ID {vetId}.");
+            }
+
+            return Ok(workingHours);
+       
+
+        
+    }
+
+
+    [HttpPut("{id}/working-hours/{day}")]
+    public async Task<IActionResult> SetWorkingHours(int id, DayOfWeek day, SetWorkingHoursRequest request)
+    {
+        if (request.StartTime >= request.EndTime)
+        {
+            return BadRequest("Start time must be before end time.");
+        }
+
+        var updated = await service.SetWorkingHoursAsync(id, day, request);
+        return updated ? NoContent() : NotFound("Vet not found.");
+    }
+
 }
 

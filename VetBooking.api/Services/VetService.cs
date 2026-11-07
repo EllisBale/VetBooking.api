@@ -80,6 +80,66 @@ public class VetService(AppDbContext context) : IVetService
 
         return true;
     }
+
+
+    public async Task<bool> ExistsAsync(int id)
+    {
+        return await context.Vets.AnyAsync(v => v.Id == id);
+    }
+
+
+    public async Task<List<WorkingHoursResponse>> GetWorkingHoursAsync(int vetId)
+    {
+        var vetExists = await context.Vets.AnyAsync(v => v.Id == vetId);
+
+        if (!vetExists)
+        {
+            throw new ArgumentException($"Vet ID {vetId} does not exist.");
+        }
+
+        return await context.VetWorkingHours
+           .Where(wh => wh.VetId == vetId)
+           .OrderBy(wh => wh.DayOfWeek)
+           .Select(wh => new WorkingHoursResponse
+           {
+               DayOfWeek = wh.DayOfWeek,
+               StartTime = wh.StartTime,
+               EndTime = wh.EndTime
+           })
+           .ToListAsync();
+    }
+
+    public async Task<bool> SetWorkingHoursAsync(int vetId, DayOfWeek day, SetWorkingHoursRequest request)
+    {
+        if (!await context.Vets.AnyAsync(v => v.Id == vetId))
+        {
+            return false;
+        }
+
+        var hours = await context.VetWorkingHours.FirstOrDefaultAsync(wh => wh.VetId == vetId && wh.DayOfWeek == day);
+
+        if (hours is null)
+        {
+            hours = new WorkingHours
+            {
+                VetId = vetId,
+                DayOfWeek = day,
+                StartTime = request.StartTime,
+                EndTime = request.EndTime
+            };
+            context.VetWorkingHours.Add(hours);
+        }
+
+        hours.StartTime = request.StartTime;
+        hours.EndTime = request.EndTime;
+
+        await context.SaveChangesAsync();
+        return true;
+
+    }
+
+
+
 }
 
 
