@@ -100,6 +100,14 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
         };
     }
 
+
+    public async Task<bool> HasAppointmentOverlapAsync(int vetId, DateTime requestedStart, DateTime requestedEnd)
+    {
+        return await context.Appointments
+            .Where(a => a.VetId == vetId && a.Status != AppointmentStatus.Cancelled)
+            .AnyAsync(a => requestedStart < a.EndUtc && requestedEnd > a.StartUtc);
+    }
+
     public async Task<AppointmentResponse?> CreateAsync(CreateAppointmentRequest request)
     {
 
@@ -139,6 +147,14 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
         if (!appointmentTypeExists)
         {
             throw new ArgumentException($"Appointment Type ID {request.AppointmentTypeId} does not exist.");
+        }
+
+
+        var hasOverlap = await HasAppointmentOverlapAsync(request.VetId.Value, request.StartUtc, request.EndUtc);
+
+        if (!hasOverlap)
+        {
+            throw new InvalidOperationException("The select time slot conflicts with an existing appointment.");
         }
 
         var appointment = new Appointment

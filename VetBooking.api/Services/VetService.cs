@@ -97,6 +97,8 @@ public class VetService(AppDbContext context) : IVetService
             throw new ArgumentException($"Vet ID {vetId} does not exist.");
         }
 
+ 
+
         return await context.VetWorkingHours
            .Where(wh => wh.VetId == vetId)
            .OrderBy(wh => wh.DayOfWeek)

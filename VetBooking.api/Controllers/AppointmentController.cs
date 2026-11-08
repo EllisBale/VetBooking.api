@@ -45,6 +45,8 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
             return BadRequest("Appointment request body cannot be null.");
         }
 
+
+
         try
         {
             var createdAppointment = await service.CreateAsync(request);
@@ -64,6 +66,12 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
         {
             return BadRequest(ex.Message);
         }
+
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ex.Message);
+        }
+
         
     }
 
