@@ -102,11 +102,12 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
 
 
     public async Task<bool> HasAppointmentOverlapAsync(int vetId, DateTime requestedStart, DateTime requestedEnd)
-    {
-        return await context.Appointments
-            .Where(a => a.VetId == vetId && a.Status != AppointmentStatus.Cancelled)
-            .AnyAsync(a => requestedStart < a.EndUtc && requestedEnd > a.StartUtc);
-    }
+        {
+            return await context.Appointments
+                .Where(a => a.VetId == vetId && a.Status != AppointmentStatus.Cancelled)
+                .AnyAsync(a => requestedStart < a.EndUtc && requestedEnd > a.StartUtc);
+        }
+        
 
     public async Task<AppointmentResponse?> CreateAsync(CreateAppointmentRequest request)
     {

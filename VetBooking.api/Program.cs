@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using VetBooking.api.Data;
+using VetBooking.api.Middleware;
 using VetBooking.api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,16 +14,21 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IAppointmentTypeService, AppointmentTypeService>();
-
 builder.Services.AddScoped<IOwnerService, OwnerService>();
-
 builder.Services.AddScoped<IPetService, PetService>();
-
 builder.Services.AddScoped<IVetService, VetService>();
-
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+builder.Services.AddProblemDetails();
+
+
 var app = builder.Build();
+
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -30,6 +36,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+ 
 
 app.UseHttpsRedirection();
 
