@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Tests/Tests.csproj" Id="e6170cc3-6638-4338-a891-062454bcd2ea" />
   <Project Path="VetBooking.api/VetBooking.api.csproj" />
 </Solution>

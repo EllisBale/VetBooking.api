@@ -153,9 +153,9 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
 
         var hasOverlap = await HasAppointmentOverlapAsync(request.VetId.Value, request.StartUtc, request.EndUtc);
 
-        if (!hasOverlap)
+        if (hasOverlap)
         {
-            throw new InvalidOperationException("The select time slot conflicts with an existing appointment.");
+            throw new InvalidOperationException("The selected time slot conflicts with an existing appointment.");
         }
 
         var appointment = new Appointment
