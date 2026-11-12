@@ -13,7 +13,7 @@ namespace Tests;
         public async Task CreateAsync_ThrowsException_WhenAppointmentOverlaps()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
+                .UseInMemoryDatabase(databaseName: "TestDb" + Guid.NewGuid().ToString())
                 .Options;
 
            var context = new AppDbContext(options);
@@ -34,7 +34,7 @@ namespace Tests;
 
             });
 
-            await context.SaveChangesAsync();
+             await context.SaveChangesAsync();
 
             var service = new AppointmentService(context);
 
@@ -49,5 +49,45 @@ namespace Tests;
 
             var result = await Assert.ThrowsAsync<InvalidOperationException>(() => service.CreateAsync(request));
     }
+
+
+        [Fact]
+        public async Task CreateAsync_ReturnsAppointment_WhenNoOverlap()
+        {
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb" + Guid.NewGuid().ToString())
+                .Options;
+
+            var context = new AppDbContext(options);
+
+            context.Vets.Add(new Vet { Id = 2 });
+            context.Pets.Add(new Pet { Id = 2 });
+            context.AppointmentTypes.Add(new AppointmentType { Id = 1 });
+
+            await context.SaveChangesAsync();
+
+
+        var service = new AppointmentService(context);
+
+            var request = new CreateAppointmentRequest
+            {
+                VetId = 2,
+                PetId = 2,
+                AppointmentTypeId = 1,
+                StartUtc = new DateTime(2026, 6, 1, 10, 30, 0),
+                EndUtc = new DateTime(2026, 6, 1, 11, 30, 0)
+            };
+
+            var result = await service.CreateAsync(request);
+
+            Assert.NotNull(result);
+            Assert.Equal(request.StartUtc, result.StartUtc);
+            Assert.Equal(request.EndUtc, result.EndUtc);
+
+
+
+
+
+        }
     }
 
