@@ -81,10 +81,10 @@ public class VetService(AppDbContext context) : IVetService
             return false;
         }
 
-        context.Vets.Remove(vet);
 
         try
         {
+            context.Vets.Remove(vet);
             await context.SaveChangesAsync(cancellationToken);
         }
 

@@ -7,7 +7,7 @@ namespace VetBooking.api.Services;
 
     public class PetService(AppDbContext context) : IPetService
     {
-        public async Task<List<PetResponse>> GetAllAsync()
+        public async Task<List<PetResponse>> GetAllAsync(CancellationToken cancellationToken)
             => await context.Pets
                     .Select(pet => new PetResponse
                     {
@@ -18,10 +18,10 @@ namespace VetBooking.api.Services;
                         DateOfBirth = pet.DateOfBirth,
                         OwnerId = pet.OwnerId
                     })
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
 
 
-        public async Task<PetResponse?> GetByIdAsync(int id)
+        public async Task<PetResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
             => await context.Pets
                     .Where(pet => pet.Id == id)
                     .Select(pet => new PetResponse
@@ -33,13 +33,13 @@ namespace VetBooking.api.Services;
                         DateOfBirth = pet.DateOfBirth,
                         OwnerId = pet.OwnerId
                     })
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(cancellationToken);
 
 
-        public async Task<PetResponse?> CreateAsync(CreatePetRequest request)
+        public async Task<PetResponse?> CreateAsync(CreatePetRequest request, CancellationToken cancellationToken)
         {
 
-            var ownerExists = await context.Owners.AnyAsync(owner => owner.Id == request.OwnerId);
+            var ownerExists = await context.Owners.AnyAsync(owner => owner.Id == request.OwnerId, cancellationToken);
 
             if (!ownerExists)
             {
@@ -55,38 +55,57 @@ namespace VetBooking.api.Services;
                 OwnerId = request.OwnerId ?? 0
             };
 
-            context.Pets.Add(pet);
-                 await context.SaveChangesAsync();
+            try
+            {
+                context.Pets.Add(pet);
+                await context.SaveChangesAsync(cancellationToken);
+            }
 
-                 return new PetResponse
-                 {
-                   Name = pet.Name,
-                   Species = pet.Species,
-                   Breed = pet.Breed,
-                   DateOfBirth = pet.DateOfBirth,
-                   OwnerId = pet.OwnerId
-                 };
+            catch (DbUpdateException ex)
+            {
+                throw new ArgumentException("An error occurred while creating the pet.", ex);
+            }
+
+
+            return new PetResponse
+            {
+                Name = pet.Name,
+                Species = pet.Species,
+                Breed = pet.Breed,
+                DateOfBirth = pet.DateOfBirth,
+                OwnerId = pet.OwnerId
+            };
         }
 
-       public async Task<bool> DeleteAsync(int id)
+
+       public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
        {
-            var pet = await context.Pets.FindAsync(id);
+            var pet = await context.Pets.FindAsync(id, cancellationToken);
 
             if (pet is null)
             {
                 return false;
             }
 
-            context.Pets.Remove(pet);
-            await context.SaveChangesAsync();
+            try
+            {
+                context.Pets.Remove(pet);
+                await context.SaveChangesAsync(cancellationToken);
+            }
+            
+            catch (DbUpdateException ex)
+            {
+                throw new ArgumentException("Could not delete this pet due to existing database constraints.", ex);
+            }
 
             return true;
-        }
+       }
 
-        public async Task<bool> UpdateAsync(int id, UpdatePetRequest request)
+
+        public async Task<bool> UpdateAsync(int id, UpdatePetRequest request, CancellationToken cancellationToken)
         {
-            var pet = await context.Pets.FindAsync(id);
-            var ownerExists = await context.Owners.AnyAsync(owner => owner.Id == request.OwnerId);
+            var pet = await context.Pets.FindAsync(id, cancellationToken);
+            var ownerExists = await context.Owners.AnyAsync(owner => owner.Id == request.OwnerId, cancellationToken);
 
             if (pet is null || !ownerExists)
             {
@@ -99,7 +118,15 @@ namespace VetBooking.api.Services;
             pet.DateOfBirth = request.DateOfBirth;
             pet.OwnerId = request.OwnerId;
 
-            await context.SaveChangesAsync();
+            try
+            {
+               await context.SaveChangesAsync(cancellationToken);
+            }
+
+            catch (DbUpdateException ex)
+            {
+                throw new ArgumentException("An error occurred while updating the pet.", ex);
+            }
 
             return true;
         }

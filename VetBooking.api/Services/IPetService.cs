@@ -4,14 +4,14 @@ namespace VetBooking.api.Services;
 
     public interface IPetService
     {
-        Task<List<PetResponse>> GetAllAsync();
+        Task<List<PetResponse>> GetAllAsync(CancellationToken cancellationToken);
 
-        Task<PetResponse?> GetByIdAsync(int id);
+        Task<PetResponse?> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<PetResponse?> CreateAsync(CreatePetRequest request);
+        Task<PetResponse?> CreateAsync(CreatePetRequest request, CancellationToken cancellationToken);
 
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
 
-        Task<bool> UpdateAsync(int id, UpdatePetRequest request);
+        Task<bool> UpdateAsync(int id, UpdatePetRequest request, CancellationToken cancellationToken);
 }
 
