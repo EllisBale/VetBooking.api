@@ -9,9 +9,9 @@ namespace VetBooking.api.Controllers;
 public class AppointmentController(IAppointmentService service) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<AppointmentResponse>>> GetAllAppointments()
+    public async Task<ActionResult<List<AppointmentResponse>>> GetAllAppointments(CancellationToken cancellationToken)
     {
-        var appointments = await service.GetAllAsync();
+        var appointments = await service.GetAllAsync(cancellationToken);
 
         if (appointments is null || appointments.Count is 0)
         {
@@ -23,9 +23,9 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
 
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<AppointmentResponse?>> GetAppointmentById(int id)
+    public async Task<ActionResult<AppointmentResponse?>> GetAppointmentById(int id, CancellationToken cancellationToken)
     {
-        var appointment = await service.GetByIdAsync(id);
+        var appointment = await service.GetByIdAsync(id, cancellationToken);
 
         if (appointment is null)
         {
@@ -37,7 +37,7 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
 
     [HttpPost]
 
-    public async Task<ActionResult<AppointmentResponse?>> CreateAppointment([FromBody] CreateAppointmentRequest request)
+    public async Task<ActionResult<AppointmentResponse?>> CreateAppointment([FromBody] CreateAppointmentRequest request, CancellationToken cancellationToken)
     {
 
         if (request is null)
@@ -46,10 +46,9 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
         }
 
 
-
         try
         {
-            var createdAppointment = await service.CreateAsync(request);
+            var createdAppointment = await service.CreateAsync(request, cancellationToken);
 
             if (createdAppointment is null)
             {

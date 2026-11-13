@@ -8,7 +8,7 @@ namespace VetBooking.api.Services;
 public class AppointmentService(AppDbContext context) : IAppointmentService
 {
 
-    public async Task<List<AppointmentResponse>> GetAllAsync()
+    public async Task<List<AppointmentResponse>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await context.Appointments
             .Include(a => a.Pet)
@@ -47,24 +47,22 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
                     Specialisation = app.Vet.Specialisation
                 }
 
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
     }
 
 
-    public async Task<AppointmentResponse?> GetByIdAsync(int id)
+    public async Task<AppointmentResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var appointment = await context.Appointments
             .Include(a => a.Pet)
             .Include(a => a.Vet)
             .Include(a => a.AppointmentType)
-            .FirstOrDefaultAsync(a => a.Id == id);
+            .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
 
         if (appointment is null)
         {
             return null;
         }
-
-
 
         return new AppointmentResponse
         {
@@ -109,7 +107,7 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
         }
         
 
-    public async Task<AppointmentResponse?> CreateAsync(CreateAppointmentRequest request)
+    public async Task<AppointmentResponse?> CreateAsync(CreateAppointmentRequest request, CancellationToken cancellationToken)
     {
 
         if (request is null)
@@ -117,12 +115,10 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
             throw new ArgumentException("Appointment request cannot be null.");
         }
 
-    
         if (request.StartUtc >= request.EndUtc)
         {
             throw new ArgumentException("Start time must be before end time.");
         }
-
 
         if (request.PetId is null || request.PetId <= 0 ||
             request.VetId is null || request.VetId <= 0 ||
@@ -169,11 +165,19 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
             AppointmentTypeId = request.AppointmentTypeId ?? 0
         };
 
-        context.Appointments.Add(appointment);
-        await context.SaveChangesAsync();
 
-        var createdAppointment = await GetByIdAsync(appointment.Id);
+        try
+        {
+            context.Appointments.Add(appointment);
+            await context.SaveChangesAsync(cancellationToken);
+        }
 
+        catch (DbUpdateException ex)
+        {
+            throw new InvalidOperationException("An error occurred while creating the appointment.", ex);
+        }
+
+        var createdAppointment = await GetByIdAsync(appointment.Id, cancellationToken);
         return createdAppointment!;
 
     }
