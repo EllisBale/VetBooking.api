@@ -9,9 +9,9 @@ namespace VetBooking.api.Controllers;
     {
         [HttpGet]
 
-        public async Task<ActionResult<List<OwnerResponse>>> GetAllOwners()
+        public async Task<ActionResult<List<OwnerResponse>>> GetAllOwners(CancellationToken cancellationToken)
         {
-            var owners = await service.GetAllAsync();
+            var owners = await service.GetAllAsync(cancellationToken);
 
             if (owners is null || owners.Count is 0)
             {
@@ -22,9 +22,9 @@ namespace VetBooking.api.Controllers;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<OwnerResponse?>> GetById(int id)
+        public async Task<ActionResult<OwnerResponse?>> GetById(int id, CancellationToken cancellationToken)
         {
-            var owner = await service.GetByIdAsync(id);
+            var owner = await service.GetByIdAsync(id, cancellationToken);
 
             if (owner is null)
             {
@@ -38,9 +38,9 @@ namespace VetBooking.api.Controllers;
 
         [HttpPost]
 
-        public async Task<ActionResult<OwnerResponse>> CreateOwner(CreateOwnerRequest request)
+        public async Task<ActionResult<OwnerResponse>> CreateOwner(CreateOwnerRequest request, CancellationToken cancellationToken)
         {
-            var createdOwner = await service.CreateAsync(request);
+            var createdOwner = await service.CreateAsync(request, cancellationToken);
 
             return CreatedAtAction(nameof(GetById), new { id = createdOwner.Id }, createdOwner);
 
@@ -48,16 +48,16 @@ namespace VetBooking.api.Controllers;
 
         [HttpDelete("{id}")]
 
-        public async Task<IActionResult> DeleteOwner(int id)
+        public async Task<IActionResult> DeleteOwner(int id, CancellationToken cancellationToken)
         {
-            var owner = await service.GetByIdAsync(id);
+            var owner = await service.GetByIdAsync(id, cancellationToken);
 
             if (owner is null)
             {
                 return NotFound("Owner Not Found.");
             }
 
-            var deleted = await service.DeleteAsync(id);
+            var deleted = await service.DeleteAsync(id, cancellationToken);
 
             if (!deleted)
             {
@@ -70,16 +70,16 @@ namespace VetBooking.api.Controllers;
 
         [HttpPut("{id}")]
 
-        public async Task<IActionResult> UpdateOwner(int id, UpdateOwnerRequest request)
+        public async Task<IActionResult> UpdateOwner(int id, UpdateOwnerRequest request, CancellationToken cancellationToken)
         {
-            var owner = await service.GetByIdAsync(id);
+            var owner = await service.GetByIdAsync(id, cancellationToken);
 
             if (owner is null)
             {
                 return NotFound("Owner Not Found.");
             }
 
-            var updated = await service.UpdateAsync(id, request);
+            var updated = await service.UpdateAsync(id, request, cancellationToken);
 
             if (!updated)
             {
