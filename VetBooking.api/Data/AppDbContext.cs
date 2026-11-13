@@ -15,7 +15,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     protected override void OnModelCreating(ModelBuilder modelBuilder)     {
        
         modelBuilder.Entity<Vet>().HasData(
-            new Vet { Id = 1, Name = "Test", Specialisation = "Surgery" }
+            new Vet { 
+                Id = 1, Name = "Test",
+                Specialisation = "Surgery",
+                Email = "Vet@example.com",
+                PhoneNumber = "07700 900000"
+            }
             
         );
 
@@ -47,6 +52,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             new AppointmentType { Id = 4, Name = "Dental Cleaning", DurationInMinutes = 60, Price = 150.00m },
             new AppointmentType { Id = 5, Name = "Emergency", DurationInMinutes = 45, Price = 200.00m }
         );
+
+
+        modelBuilder.Entity<Vet>()
+            .HasIndex(v => v.Email)
+            .IsUnique();
+
+        modelBuilder.Entity<Vet>()
+            .HasIndex(v => v.PhoneNumber)
+            .IsUnique();
+
+        modelBuilder.Entity<Owner>()
+            .HasIndex(o => o.Email)
+            .IsUnique();
+
+        modelBuilder.Entity<Owner>()
+            .HasIndex(o => o.PhoneNumber);
+
+
     }
 
 

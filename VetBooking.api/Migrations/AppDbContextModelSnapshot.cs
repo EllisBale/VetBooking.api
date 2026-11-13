@@ -136,7 +136,7 @@ namespace VetBooking.api.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -144,9 +144,14 @@ namespace VetBooking.api.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber");
 
                     b.ToTable("Owners");
                 });
@@ -194,7 +199,7 @@ namespace VetBooking.api.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -202,7 +207,7 @@ namespace VetBooking.api.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Specialisation")
                         .IsRequired()
@@ -210,15 +215,21 @@ namespace VetBooking.api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
                     b.ToTable("Vets");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Email = "",
+                            Email = "Vet@example.com",
                             Name = "Test",
-                            PhoneNumber = "",
+                            PhoneNumber = "07700 900000",
                             Specialisation = "Surgery"
                         });
                 });
