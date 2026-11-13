@@ -192,7 +192,15 @@ namespace VetBooking.api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -208,7 +216,9 @@ namespace VetBooking.api.Migrations
                         new
                         {
                             Id = 1,
+                            Email = "",
                             Name = "Test",
+                            PhoneNumber = "",
                             Specialisation = "Surgery"
                         });
                 });

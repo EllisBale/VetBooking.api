@@ -12,5 +12,13 @@ namespace VetBooking.api.Dtos;
         [StringLength(100)]
         public string Specialisation { get; set; } = string.Empty;
 
+        [Required]
+        [StringLength(100)]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(20)]
+        public string PhoneNumber { get; set; } = string.Empty;
+
     }
 

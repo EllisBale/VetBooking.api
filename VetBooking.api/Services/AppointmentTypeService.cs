@@ -75,7 +75,6 @@ namespace VetBooking.api.Services;
                 return false;
             }
 
-
             appointmentType.Name = request.Name;
             appointmentType.DurationInMinutes = request.DurationInMinutes;
             appointmentType.Price = request.Price;

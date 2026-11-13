@@ -19,5 +19,5 @@
 
         public int AppointmentTypeId { get; set; }
         public AppointmentType AppointmentType { get; set; } = null!;
-}
+    }
 

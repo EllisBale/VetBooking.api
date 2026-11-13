@@ -13,7 +13,9 @@ public class VetService(AppDbContext context) : IVetService
                 {
                     Id = vet.Id,
                     Name = vet.Name,
-                    Specialisation = vet.Specialisation
+                    Specialisation = vet.Specialisation,
+                    Email = vet.Email,
+                    PhoneNumber = vet.PhoneNumber
                 })
                 .ToListAsync();
 
@@ -24,7 +26,9 @@ public class VetService(AppDbContext context) : IVetService
                 {
                     Id = vet.Id,
                     Name = vet.Name,
-                    Specialisation = vet.Specialisation
+                    Specialisation = vet.Specialisation,
+                    Email = vet.Email,
+                    PhoneNumber = vet.PhoneNumber
                 })
                 .FirstOrDefaultAsync();
 
@@ -34,7 +38,9 @@ public class VetService(AppDbContext context) : IVetService
         var vet = new Vet
         {
             Name = request.Name,
-            Specialisation = request.Specialisation
+            Specialisation = request.Specialisation,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber
         };
 
         context.Vets.Add(vet);
@@ -44,7 +50,9 @@ public class VetService(AppDbContext context) : IVetService
         {
             Id = vet.Id,
             Name = vet.Name,
-            Specialisation = vet.Specialisation
+            Specialisation = vet.Specialisation,
+            Email = vet.Email,
+            PhoneNumber = vet.PhoneNumber
         };
     }
 
@@ -75,6 +83,8 @@ public class VetService(AppDbContext context) : IVetService
 
         vet.Name = request.Name;
         vet.Specialisation = request.Specialisation;
+        vet.Email = request.Email;
+        vet.PhoneNumber = request.PhoneNumber;
 
         await context.SaveChangesAsync();
 
