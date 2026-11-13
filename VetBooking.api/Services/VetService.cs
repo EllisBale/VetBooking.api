@@ -7,7 +7,7 @@ namespace VetBooking.api.Services;
 
 public class VetService(AppDbContext context) : IVetService
 {
-    public async Task<List<VetResponse>> GetAllAsync()
+    public async Task<List<VetResponse>> GetAllAsync(CancellationToken cancellationToken)
         => await context.Vets
                 .Select(vet => new VetResponse
                 {
@@ -16,10 +16,10 @@ public class VetService(AppDbContext context) : IVetService
                     Specialisation = vet.Specialisation,
                     Email = vet.Email,
                     PhoneNumber = vet.PhoneNumber
-                })
-                .ToListAsync();
+                })  
+                .ToListAsync(cancellationToken);
 
-    public async Task<VetResponse?> GetByIdAsync(int id)
+    public async Task<VetResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
         => await context.Vets
                 .Where(vet => vet.Id == id)
                 .Select(vet => new VetResponse
@@ -30,11 +30,17 @@ public class VetService(AppDbContext context) : IVetService
                     Email = vet.Email,
                     PhoneNumber = vet.PhoneNumber
                 })
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
 
-    public async Task<VetResponse> CreateAsync(CreateVetRequest request)
+    public async Task<VetResponse> CreateAsync(CreateVetRequest request, CancellationToken cancellationToken)
     {
+
+        if (await context.Vets.AnyAsync(v => v.Email == request.Email, cancellationToken))
+        {
+            throw new ArgumentException($"A vet with the email {request.Email} already exists.");
+        }
+
         var vet = new Vet
         {
             Name = request.Name,
@@ -43,8 +49,18 @@ public class VetService(AppDbContext context) : IVetService
             PhoneNumber = request.PhoneNumber
         };
 
-        context.Vets.Add(vet);
-        await context.SaveChangesAsync();
+
+        try
+        {
+            context.Vets.Add(vet);
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
+        catch (DbUpdateException ex)
+        {
+            throw new ArgumentException("A vet with this email or phone number already exists.", ex);
+        }
+
 
         return new VetResponse
         {
@@ -56,9 +72,9 @@ public class VetService(AppDbContext context) : IVetService
         };
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var vet = await context.Vets.FindAsync(id);
+        var vet = await context.Vets.FindAsync(id, cancellationToken);
 
         if (vet is null)
         {
@@ -66,19 +82,33 @@ public class VetService(AppDbContext context) : IVetService
         }
 
         context.Vets.Remove(vet);
-        await context.SaveChangesAsync();
+
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
+        catch (DbUpdateException ex)
+        {
+            throw new InvalidOperationException("Could not delete this vet due to existing database constraints.", ex);
+        }
 
         return true;
     }
 
 
-    public async Task<bool> UpdateAsync(int id, UpdateVetRequest request)
+    public async Task<bool> UpdateAsync(int id, UpdateVetRequest request, CancellationToken cancellationToken)
     {
-        var vet = await context.Vets.FindAsync(id);
+        var vet = await context.Vets.FindAsync(id, cancellationToken);
 
         if (vet is null)
         {
             return false;
+        }
+
+        if (await context.Vets.AnyAsync(v => v.Email == request.Email && v.Id != id, cancellationToken))
+        {
+            throw new ArgumentException($"A vet with the email {request.Email} already exists.");
         }
 
         vet.Name = request.Name;
@@ -86,7 +116,15 @@ public class VetService(AppDbContext context) : IVetService
         vet.Email = request.Email;
         vet.PhoneNumber = request.PhoneNumber;
 
-        await context.SaveChangesAsync();
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
+        catch (DbUpdateException ex)
+        {
+            throw new ArgumentException("A vet with this email or phone number already exists.", ex);
+        }
 
         return true;
     }
@@ -98,9 +136,9 @@ public class VetService(AppDbContext context) : IVetService
     }
 
 
-    public async Task<List<WorkingHoursResponse>> GetWorkingHoursAsync(int vetId)
+    public async Task<List<WorkingHoursResponse>> GetWorkingHoursAsync(int vetId, CancellationToken cancellationToken)
     {
-        var vetExists = await context.Vets.AnyAsync(v => v.Id == vetId);
+        var vetExists = await context.Vets.AnyAsync(v => v.Id == vetId, cancellationToken);
 
         if (!vetExists)
         {
@@ -108,7 +146,6 @@ public class VetService(AppDbContext context) : IVetService
         }
 
  
-
         return await context.VetWorkingHours
            .Where(wh => wh.VetId == vetId)
            .OrderBy(wh => wh.DayOfWeek)
@@ -118,17 +155,17 @@ public class VetService(AppDbContext context) : IVetService
                StartTime = wh.StartTime,
                EndTime = wh.EndTime
            })
-           .ToListAsync();
+           .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> SetWorkingHoursAsync(int vetId, DayOfWeek day, SetWorkingHoursRequest request)
+    public async Task<bool> SetWorkingHoursAsync(int vetId, DayOfWeek day, SetWorkingHoursRequest request, CancellationToken cancellationToken)
     {
-        if (!await context.Vets.AnyAsync(v => v.Id == vetId))
+        if (!await context.Vets.AnyAsync(v => v.Id == vetId, cancellationToken))
         {
             return false;
         }
 
-        var hours = await context.VetWorkingHours.FirstOrDefaultAsync(wh => wh.VetId == vetId && wh.DayOfWeek == day);
+        var hours = await context.VetWorkingHours.FirstOrDefaultAsync(wh => wh.VetId == vetId && wh.DayOfWeek == day, cancellationToken);
 
         if (hours is null)
         {
@@ -141,11 +178,22 @@ public class VetService(AppDbContext context) : IVetService
             };
             context.VetWorkingHours.Add(hours);
         }
+        else
+        {
+            hours.StartTime = request.StartTime;
+            hours.EndTime = request.EndTime;
+        }
 
-        hours.StartTime = request.StartTime;
-        hours.EndTime = request.EndTime;
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+        }
 
-        await context.SaveChangesAsync();
+        catch (DbUpdateException ex)
+        {
+            throw new ArgumentException("Could not set working hours due to existing database constraints.", ex);
+        }
+
         return true;
 
     }

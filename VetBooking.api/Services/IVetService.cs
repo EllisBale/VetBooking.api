@@ -3,21 +3,21 @@ namespace VetBooking.api.Services;
 
     public interface IVetService
     {
-        Task<List<VetResponse>> GetAllAsync();
+        Task<List<VetResponse>> GetAllAsync(CancellationToken cancellationToken);
 
-        Task<VetResponse?> GetByIdAsync(int id);
+        Task<VetResponse?> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<VetResponse> CreateAsync(CreateVetRequest request);
+        Task<VetResponse> CreateAsync(CreateVetRequest request, CancellationToken cancellationToken);
 
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
 
-        Task<bool> UpdateAsync(int id, UpdateVetRequest request);
+        Task<bool> UpdateAsync(int id, UpdateVetRequest request, CancellationToken cancellationToken);
 
         Task<bool> ExistsAsync(int id);
 
-        Task<List<WorkingHoursResponse>> GetWorkingHoursAsync(int vetId);
+        Task<List<WorkingHoursResponse>> GetWorkingHoursAsync(int vetId, CancellationToken cancellationToken);
 
-        Task<bool> SetWorkingHoursAsync(int vetId, DayOfWeek day, SetWorkingHoursRequest request);
+        Task<bool> SetWorkingHoursAsync(int vetId, DayOfWeek day, SetWorkingHoursRequest request, CancellationToken cancellationToken);
 
     }
 
