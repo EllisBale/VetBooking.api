@@ -7,7 +7,7 @@ namespace VetBooking.api.Services;
 
     public class AppointmentTypeService(AppDbContext context) : IAppointmentTypeService
     {
-        public async Task<List<AppointmentTypeResponse>> GetAllAsync()
+        public async Task<List<AppointmentTypeResponse>> GetAllAsync(CancellationToken cancellationToken)
             => await context.AppointmentTypes
                 .Select(a => new AppointmentTypeResponse
                 {
@@ -16,9 +16,9 @@ namespace VetBooking.api.Services;
                     DurationInMinutes = a.DurationInMinutes,
                     Price = a.Price
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
-        public async Task<AppointmentTypeResponse?> GetByIdAsync(int id)
+        public async Task<AppointmentTypeResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
             => await context.AppointmentTypes
                 .Where(a => a.Id == id)
                 .Select(a => new AppointmentTypeResponse
@@ -27,10 +27,12 @@ namespace VetBooking.api.Services;
                     Name = a.Name,
                     DurationInMinutes = a.DurationInMinutes,
                     Price = a.Price
-                }).FirstOrDefaultAsync();
+                })
+                .FirstOrDefaultAsync(cancellationToken);
 
-        public async Task<AppointmentTypeResponse> CreateAsync(CreateAppointmentTypeRequest request)
+        public async Task<AppointmentTypeResponse> CreateAsync(CreateAppointmentTypeRequest request, CancellationToken cancellationToken)
         {
+           
             var appointmentType = new AppointmentType
             {
                 Name = request.Name,
@@ -38,8 +40,18 @@ namespace VetBooking.api.Services;
                 Price = request.Price
             };
 
-            context.AppointmentTypes.Add(appointmentType);
-            await context.SaveChangesAsync();
+
+            try
+            {
+                context.AppointmentTypes.Add(appointmentType);
+                await context.SaveChangesAsync(cancellationToken);
+            }
+
+            catch (DbUpdateException ex)
+            {
+                throw new ArgumentException("Failed to create AppointmentType.", ex);
+            }
+
 
             return new AppointmentTypeResponse
             {
@@ -50,25 +62,33 @@ namespace VetBooking.api.Services;
             };
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var appointmentType = await context.AppointmentTypes.FindAsync(id);
+            var appointmentType = await context.AppointmentTypes.FindAsync(id, cancellationToken);
 
             if (appointmentType is null)
             {
                 return false;
             }
 
-            context.AppointmentTypes.Remove(appointmentType);
-            await context.SaveChangesAsync();
+            try
+            {
+                context.AppointmentTypes.Remove(appointmentType);
+                await context.SaveChangesAsync(cancellationToken);
+            }
+
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException("Could not delete this AppointmentType due to existing database constraints.", ex);
+            }
 
             return true;
         }
 
 
-        public async Task<bool> UpdateAsync(int id, UpdateAppointmentTypeRequest request)
+        public async Task<bool> UpdateAsync(int id, UpdateAppointmentTypeRequest request, CancellationToken cancellationToken)
         {
-            var appointmentType = await context.AppointmentTypes.FindAsync(id);
+            var appointmentType = await context.AppointmentTypes.FindAsync(id, cancellationToken);
 
             if (appointmentType is null)
             {
@@ -79,7 +99,16 @@ namespace VetBooking.api.Services;
             appointmentType.DurationInMinutes = request.DurationInMinutes;
             appointmentType.Price = request.Price;
 
-            await context.SaveChangesAsync();
+            try
+            {
+                await context.SaveChangesAsync(cancellationToken);
+            }
+
+            catch (DbUpdateException ex)
+            {
+                throw new ArgumentException("Failed to update AppointmentType.", ex);
+            }
+        
             return true;
         }
 

@@ -9,9 +9,9 @@ namespace VetBooking.api.Controllers;
     public class AppointmentTypesController(IAppointmentTypeService service) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<List<AppointmentTypeResponse>>> GetAllAppointmentTypes()
+        public async Task<ActionResult<List<AppointmentTypeResponse>>> GetAllAppointmentTypes(CancellationToken cancellationToken)
         {
-            var appointmentTypes = await service.GetAllAsync();
+            var appointmentTypes = await service.GetAllAsync(cancellationToken);
 
             if (appointmentTypes is null || appointmentTypes.Count is 0)
             {
@@ -23,9 +23,9 @@ namespace VetBooking.api.Controllers;
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AppointmentTypeResponse>> GetAllAppointmentTypesById(int id)
+        public async Task<ActionResult<AppointmentTypeResponse>> GetAllAppointmentTypesById(int id, CancellationToken cancellationToken)
         {
-            var appointmentType = await service.GetByIdAsync(id);
+            var appointmentType = await service.GetByIdAsync(id, cancellationToken);
 
             if (appointmentType is null)
             {
@@ -37,9 +37,9 @@ namespace VetBooking.api.Controllers;
 
         [HttpPost]
 
-        public async Task<ActionResult<AppointmentTypeResponse>> CreateAppointmentType(CreateAppointmentTypeRequest request)
+        public async Task<ActionResult<AppointmentTypeResponse>> CreateAppointmentType(CreateAppointmentTypeRequest request, CancellationToken cancellationToken)
         {
-            var createdAppointmentType = await service.CreateAsync(request);
+            var createdAppointmentType = await service.CreateAsync(request, cancellationToken);
 
             return CreatedAtAction(nameof(GetAllAppointmentTypesById), new { id = createdAppointmentType.Id }, createdAppointmentType);
 
@@ -49,9 +49,9 @@ namespace VetBooking.api.Controllers;
 
         [HttpDelete("{id}")]
 
-        public async Task<IActionResult> DeleteAppointmentType(int id)
+        public async Task<IActionResult> DeleteAppointmentType(int id, CancellationToken cancellationToken)
         {
-            var appointmentType = await service.GetByIdAsync(id);
+            var appointmentType = await service.GetByIdAsync(id, cancellationToken);
 
 
             if (appointmentType is null)
@@ -60,7 +60,7 @@ namespace VetBooking.api.Controllers;
             }
 
 
-            var deleted = await service.DeleteAsync(id);
+            var deleted = await service.DeleteAsync(id, cancellationToken);
 
 
             if (!deleted)
@@ -73,9 +73,9 @@ namespace VetBooking.api.Controllers;
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAppointmentType(int id, UpdateAppointmentTypeRequest request)
+        public async Task<IActionResult> UpdateAppointmentType(int id, UpdateAppointmentTypeRequest request, CancellationToken cancellationToken)
         {
-            var updated = await service.UpdateAsync(id, request);
+            var updated = await service.UpdateAsync(id, request, cancellationToken);
 
             if (!updated)
             {
