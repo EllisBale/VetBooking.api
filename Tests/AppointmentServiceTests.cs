@@ -55,7 +55,7 @@ namespace Tests;
 
             var service = new AppointmentService(context);
 
-            var result = await service.GetAllAsync();
+            var result = await service.GetAllAsync(CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);
@@ -90,7 +90,7 @@ namespace Tests;
             await context.SaveChangesAsync(TestContext.Current.CancellationToken);
             var service = new AppointmentService(context);
 
-            var result = await service.GetByIdAsync(1);
+            var result = await service.GetByIdAsync(1, CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.Equal(1, result.Id);
@@ -137,7 +137,7 @@ namespace Tests;
                 EndUtc = new DateTime(2026, 6, 1, 11, 30, 0)
             };
 
-            var result = await Assert.ThrowsAsync<InvalidOperationException>(() => service.CreateAsync(request));
+            var result = await Assert.ThrowsAsync<InvalidOperationException>(() => service.CreateAsync(request, CancellationToken.None));
         }
 
 
@@ -168,7 +168,7 @@ namespace Tests;
                 EndUtc = new DateTime(2026, 6, 1, 11, 30, 0)
             };
 
-            var result = await service.CreateAsync(request);
+            var result = await service.CreateAsync(request, CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.Equal(request.StartUtc, result.StartUtc);
@@ -203,7 +203,7 @@ namespace Tests;
                 EndUtc = new DateTime(2026, 6, 1, 11, 30, 0)
             };
 
-            var result = await Assert.ThrowsAsync<ArgumentException>(() => service.CreateAsync(request));
+            var result = await Assert.ThrowsAsync<ArgumentException>(() => service.CreateAsync(request, CancellationToken.None));
             Assert.Contains("Pet ID 99 does not exist.", result.Message);
         }
 
@@ -233,7 +233,7 @@ namespace Tests;
                 EndUtc = new DateTime(2026, 6, 1, 11, 30, 0)
             };
 
-            var result = await Assert.ThrowsAsync<ArgumentException>(() => service.CreateAsync(request));
+            var result = await Assert.ThrowsAsync<ArgumentException>(() => service.CreateAsync(request, CancellationToken.None));
             Assert.Contains("Vet ID 99 does not exist.", result.Message);
         }
 
@@ -263,7 +263,7 @@ namespace Tests;
                 EndUtc = new DateTime(2026, 6, 1, 11, 30, 0)
             };
 
-            var result = await Assert.ThrowsAsync<ArgumentException>(() => service.CreateAsync(request));
+            var result = await Assert.ThrowsAsync<ArgumentException>(() => service.CreateAsync(request, CancellationToken.None));
             Assert.Contains("Appointment Type ID 99 does not exist.", result.Message);
         }
 
