@@ -42,51 +42,63 @@ namespace VetBooking.api.Services;
         }
 
 
-        public async Task<VetScheduleOverrideResponse?> CreateOverrideAsync(CreateVetScheduleOverrideRequest request, CancellationToken cancellationToken)
+   
+        public async Task<VetScheduleOverrideResponse> CreateOverrideAsync(CreateVetScheduleOverrideRequest request, CancellationToken cancellationToken)
         {
-
-            if (!await context.Vets.AnyAsync(v => v.Id == request.VetId, cancellationToken))
+            if (request is null)
             {
-                throw new ArgumentException($"Vet with ID {request.VetId} does not exist.");
+                throw new ArgumentException("VetSchedule request cannot be null.");
+            }
+
+
+            var vetExists = await context.Vets.AnyAsync(v => v.Id == request.VetId, cancellationToken);
+
+            if (!vetExists)
+            {
+                throw new ArgumentException($"Vet ID {request.VetId} does not exist.");
             }
 
             var overrideEntity = new VetScheduleOverride
             {
-               VetId = request.VetId,
-               Date = request.Date,
-               StartTime = request.StartTime,
-               EndTime = request.EndTime,
-               IsAvailable = request.IsAvailable,
-               Reason = request.Reason
-            };
+                VetId = request.VetId,
+                IsAvailable = request.IsAvailable,
+                Date = request.Date,
+                StartTime = request.StartTime,
+                EndTime = request.EndTime,
+                Reason = request.Reason
 
+            };
 
             try
             {
                 context.VetScheduleOverrides.Add(overrideEntity);
                 await context.SaveChangesAsync(cancellationToken);
             }
-
+            
             catch (DbUpdateException ex)
             {
-                throw new ArgumentException("An error occurred while creating Vet Schedule Override.", ex);
+                throw new ArgumentException("Could not save the schedule override due to a database conflict.", ex);
             }
 
             return new VetScheduleOverrideResponse
             {
+                Id = overrideEntity.Id,
                 VetId = overrideEntity.VetId,
+                IsAvailable = overrideEntity.IsAvailable,
                 Date = overrideEntity.Date,
                 StartTime = overrideEntity.StartTime,
                 EndTime = overrideEntity.EndTime,
-                IsAvailable = overrideEntity.IsAvailable,
                 Reason = overrideEntity.Reason
             };
+
+
         }
+
 
 
         public async Task<bool> DeleteOverrideAsync(int id, CancellationToken cancellationToken)
         {
-            var overrideEntity = await context.VetScheduleOverrides.FindAsync(id , cancellationToken);
+            var overrideEntity = await context.VetScheduleOverrides.FindAsync(id, cancellationToken);
 
             if (overrideEntity is null)
             {

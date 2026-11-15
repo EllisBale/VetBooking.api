@@ -18,6 +18,7 @@ builder.Services.AddScoped<IOwnerService, OwnerService>();
 builder.Services.AddScoped<IPetService, PetService>();
 builder.Services.AddScoped<IVetService, VetService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IVetScheduleService, VetScheduleService>();
 
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -26,7 +27,6 @@ builder.Services.AddProblemDetails();
 
 
 var app = builder.Build();
-
 
 app.UseExceptionHandler();
 
@@ -37,7 +37,6 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
  
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

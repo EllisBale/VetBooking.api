@@ -13,5 +13,5 @@ namespace VetBooking.api.Services;
         Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
 
         Task<bool> UpdateAsync(int id, UpdatePetRequest request, CancellationToken cancellationToken);
-}
+    }
 
