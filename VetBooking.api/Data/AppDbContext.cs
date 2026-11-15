@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<AppointmentType> AppointmentTypes => Set<AppointmentType>();
     public DbSet<WorkingHours> VetWorkingHours => Set<WorkingHours>();
     public DbSet<Appointment> Appointments => Set<Appointment>();
+    public DbSet<VetScheduleOverride> VetScheduleOverrides => Set<VetScheduleOverride>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)     {

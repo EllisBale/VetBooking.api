@@ -234,6 +234,39 @@ namespace VetBooking.api.Migrations
                         });
                 });
 
+            modelBuilder.Entity("VetBooking.api.Models.VetScheduleOverride", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("VetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VetId");
+
+                    b.ToTable("VetScheduleOverrides");
+                });
+
             modelBuilder.Entity("VetBooking.api.Models.WorkingHours", b =>
                 {
                     b.Property<int>("Id")
@@ -315,6 +348,17 @@ namespace VetBooking.api.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("VetBooking.api.Models.VetScheduleOverride", b =>
+                {
+                    b.HasOne("VetBooking.api.Models.Vet", "Vet")
+                        .WithMany()
+                        .HasForeignKey("VetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vet");
                 });
 
             modelBuilder.Entity("VetBooking.api.Models.WorkingHours", b =>
