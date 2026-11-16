@@ -268,6 +268,45 @@ namespace Tests;
         }
 
 
+        [Fact]
+        public async Task DeleteAsync_ExistingId()
+        {
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+             .UseInMemoryDatabase(databaseName: "TestDb" + Guid.NewGuid().ToString())
+             .Options;
+
+            var context = new AppDbContext(options);
+
+
+            context.Vets.Add(new Vet { Id = 1 });
+            context.Pets.Add(new Pet { Id = 1 });
+            context.AppointmentTypes.Add(new AppointmentType { Id = 1 });
+
+
+            context.Appointments.Add(new Appointment
+            {
+                Id = 1,
+                VetId = 1,
+                AppointmentTypeId = 1,
+                PetId = 1,
+                StartUtc = new DateTime(2026, 6, 1, 10, 0, 0),
+                EndUtc = new DateTime(2026, 6, 1, 11, 0, 0)
+
+            });
+
+            await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+            var service = new AppointmentService(context);
+
+            await service.DeleteAsync(1, CancellationToken.None);
+
+            var result = await context.Appointments.FindAsync([1], TestContext.Current.CancellationToken);
+
+            Assert.Null(result);
+
+        }
+
+
 
     }
 
