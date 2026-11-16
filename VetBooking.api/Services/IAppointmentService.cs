@@ -12,5 +12,7 @@ namespace VetBooking.api.Services;
 
         Task<bool> HasAppointmentOverlapAsync(int vetId, DateTime requestedStart, DateTime requestedEnd);
 
+        Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
+
     }
 

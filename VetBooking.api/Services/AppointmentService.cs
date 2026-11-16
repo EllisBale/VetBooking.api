@@ -181,5 +181,32 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
         return createdAppointment!;
 
     }
+
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var appointment = await context.Appointments.FindAsync(id, cancellationToken);
+
+        if (appointment is null)
+        {
+            return false;
+        }
+
+        try
+        {
+            context.Appointments.Remove(appointment);
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
+        catch (DbUpdateException ex)
+        {
+            throw new ArgumentException("Could not delete this Appointment due to existing database constraints.", ex);
+        }
+
+        return true;
+    }
+
+
+
 }
 

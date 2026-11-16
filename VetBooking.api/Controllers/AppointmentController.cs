@@ -74,6 +74,28 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
         
     }
 
+
+    [HttpDelete("{id}")]
+
+    public async Task<IActionResult> DeleteAppointment(int id, CancellationToken cancellationToken)
+    {
+        var appointment = await service.GetByIdAsync(id, cancellationToken);
+
+        if (appointment is null)
+        {
+            return NotFound("Appointment Not Found.");
+        }
+
+        var deleted = await service.DeleteAsync(id, cancellationToken);
+
+        if (!deleted)
+        {
+            return BadRequest("Appointment could not be deleted.");
+        }
+
+        return NoContent();
+    }
+
 }
 
 
