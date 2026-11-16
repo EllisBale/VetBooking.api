@@ -157,7 +157,7 @@ namespace Tests;
             await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
 
-        var service = new AppointmentService(context);
+            var service = new AppointmentService(context);
 
             var request = new CreateAppointmentRequest
             {

@@ -95,7 +95,6 @@ namespace VetBooking.api.Services;
         }
 
 
-
         public async Task<bool> DeleteOverrideAsync(int id, CancellationToken cancellationToken)
         {
             var overrideEntity = await context.VetScheduleOverrides.FindAsync(id, cancellationToken);
