@@ -143,5 +143,38 @@ public class VetServiceTests
         Assert.Contains($"A vet with the email {request.Email} already exists.", result.Message);
     }
 
+
+    [Fact]
+    public async Task DeleteAsync_ExistingId()
+    {
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+             .UseInMemoryDatabase(databaseName: "TestDb" + Guid.NewGuid().ToString())
+             .Options;
+
+        var context = new AppDbContext(options);
+
+
+        context.Vets.Add(new Vet
+        {
+            Id = 1,
+            Name = "Dr. Smith",
+            Specialisation = "Surgery",
+            Email = "Vet@example.com",
+            PhoneNumber = "07700 900000"
+
+        });
+
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var service = new VetService(context);
+
+        await service.DeleteAsync(1, CancellationToken.None);
+
+        var result = await context.Vets.FindAsync([1], TestContext.Current.CancellationToken);
+
+        Assert.Null(result);
+
+    }
+
 }
 

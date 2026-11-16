@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Net;
 using VetBooking.api.Data;
 using VetBooking.api.Dtos;
 using VetBooking.api.Models;
