@@ -10,7 +10,6 @@ namespace Tests;
     public class AppointmentServiceTests
     {
 
-
         [Fact]
         public async Task GetAllAsync_ReturnsAllAppointments()
         {
