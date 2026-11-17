@@ -1,4 +1,4 @@
-const baseUrl = import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export async function getJson<T>(path: string): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`);
