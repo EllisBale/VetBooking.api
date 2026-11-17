@@ -6,7 +6,7 @@ using VetBooking.api.Services;
 using Xunit;
 
 
-namespace Tests;
+namespace Tests.Unit;
 
     public class PetServiceTests
     {
