@@ -28,6 +28,7 @@ A RESTful API for booking veterinary appointments, built with ASP.NET Core and E
 ## Features
 
 **Implemented**
+
 - CRUD endpoints for appointment types (get all, get by ID, create, delete)
 - Layered structure: controllers, services and data access kept separate
 - Request and response DTOs, so the database model is never exposed directly
@@ -35,6 +36,7 @@ A RESTful API for booking veterinary appointments, built with ASP.NET Core and E
 - Dependency injection throughout
 
 **Planned**
+
 - Owners and pets management
 - Vets and weekly working hours
 - Appointment booking with end time calculated from the appointment type's duration
@@ -49,14 +51,14 @@ A RESTful API for booking veterinary appointments, built with ASP.NET Core and E
 
 ## Tech Stack
 
-| Area | Technology |
-|---|---|
-| Language | C# |
-| Framework | ASP.NET Core Web API (.NET 10) |
-| Data access | Entity Framework Core |
-| Database | SQL Server (Express / LocalDB) |
-| Testing | xUnit |
-| Tooling | Git, GitHub, Visual Studio |
+| Area        | Technology                     |
+| ----------- | ------------------------------ |
+| Language    | C#                             |
+| Framework   | ASP.NET Core Web API (.NET 10) |
+| Data access | Entity Framework Core          |
+| Database    | SQL Server (Express / LocalDB) |
+| Testing     | xUnit                          |
+| Tooling     | Git, GitHub, Visual Studio     |
 
 ---
 
@@ -69,13 +71,13 @@ Controller  →  Service  →  AppDbContext  →  SQL Server
  (HTTP)        (logic)      (data access)
 ```
 
-| Layer | Responsibility |
-|---|---|
-| **Controllers** | Handle HTTP: routing, status codes, request and response handling |
-| **Services** | Business logic and mapping between entities and DTOs, behind interfaces |
-| **Data** | `AppDbContext`, table configuration and seed data |
-| **Models** | Entity classes that map to database tables |
-| **Dtos** | Request and response shapes exposed by the API |
+| Layer           | Responsibility                                                          |
+| --------------- | ----------------------------------------------------------------------- |
+| **Controllers** | Handle HTTP: routing, status codes, request and response handling       |
+| **Services**    | Business logic and mapping between entities and DTOs, behind interfaces |
+| **Data**        | `AppDbContext`, table configuration and seed data                       |
+| **Models**      | Entity classes that map to database tables                              |
+| **Dtos**        | Request and response shapes exposed by the API                          |
 
 ### Project structure
 
@@ -103,14 +105,14 @@ erDiagram
     APPOINTMENTTYPE ||--o{ APPOINTMENT : categorises
 ```
 
-| Entity | Description |
-|---|---|
-| `Owner` | A person who books appointments |
-| `Pet` | An animal belonging to an owner |
-| `Vet` | A member of staff who sees patients |
-| `AppointmentType` | A kind of visit, with a duration and price |
-| `WorkingHours` | A vet's availability for a day of the week |
-| `Appointment` | A booking linking a pet, a vet and an appointment type |
+| Entity            | Description                                            |
+| ----------------- | ------------------------------------------------------ |
+| `Owner`           | A person who books appointments                        |
+| `Pet`             | An animal belonging to an owner                        |
+| `Vet`             | A member of staff who sees patients                    |
+| `AppointmentType` | A kind of visit, with a duration and price             |
+| `WorkingHours`    | A vet's availability for a day of the week             |
+| `Appointment`     | A booking linking a pet, a vet and an appointment type |
 
 ---
 
@@ -118,13 +120,13 @@ erDiagram
 
 ### Appointment types
 
-| Method | Endpoint | Description | Success response |
-|---|---|---|---|
-| `GET` | `/api/AppointmentTypes` | Get all appointment types | `200 OK` |
-| `GET` | `/api/AppointmentTypes/{id}` | Get one appointment type | `200 OK` / `404 Not Found` |
-| `POST` | `/api/AppointmentTypes` | Create an appointment type | `201 Created` / `400 Bad Request` |
+| Method   | Endpoint                     | Description                | Success response                   |
+| -------- | ---------------------------- | -------------------------- | ---------------------------------- |
+| `GET`    | `/api/AppointmentTypes`      | Get all appointment types  | `200 OK`                           |
+| `GET`    | `/api/AppointmentTypes/{id}` | Get one appointment type   | `200 OK` / `404 Not Found`         |
+| `POST`   | `/api/AppointmentTypes`      | Create an appointment type | `201 Created` / `400 Bad Request`  |
 | `DELETE` | `/api/AppointmentTypes/{id}` | Delete an appointment type | `204 No Content` / `404 Not Found` |
-|`PUT` | `/api/AppointmentTypes/{id}` | Update an appointment type | `200 OK` / `404 Not Found` |
+| `PUT`    | `/api/AppointmentTypes/{id}` | Update an appointment type | `200 OK` / `404 Not Found`         |
 
 **Example request**
 
@@ -146,11 +148,11 @@ Content-Type: application/json
   "id": 1,
   "name": "Vaccination",
   "durationInMinutes": 15,
-  "price": 35.00
+  "price": 35.0
 }
 ```
 
-*More endpoints will be documented here as they are added.*
+_More endpoints will be documented here as they are added._
 
 ---
 
@@ -166,25 +168,30 @@ Content-Type: application/json
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/EllisBale/VetBooking.api.git
    cd VetBooking.api
    ```
 
 2. **Set the database connection string** using user secrets (keeps it out of source control)
+
    ```bash
    cd VetBooking.api
    dotnet user-secrets init
    dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost\\SQLEXPRESS;Database=VetBookingDb;Trusted_Connection=true;TrustServerCertificate=true;"
    ```
+
    Adjust the server name if you are using LocalDB or a different instance.
 
 3. **Create the database** by applying the migrations
+
    ```bash
    dotnet ef database update
    ```
 
 4. **Run the API**
+
    ```bash
    dotnet run
    ```
@@ -195,8 +202,8 @@ Content-Type: application/json
 
 ## Configuration
 
-| Setting | Description | How to set |
-|---|---|---|
+| Setting                               | Description                  | How to set                                                      |
+| ------------------------------------- | ---------------------------- | --------------------------------------------------------------- |
 | `ConnectionStrings:DefaultConnection` | SQL Server connection string | User secrets (development) or environment variable (deployment) |
 
 When deploying, set the connection string as an environment variable using double underscores: `ConnectionStrings__DefaultConnection`.
@@ -211,7 +218,7 @@ No credentials are stored in this repository.
 dotnet test
 ```
 
-*Test projects are planned. Unit tests will cover the booking rules (overlap detection, working-hours checks, cancellation rules), and integration tests will cover the API endpoints.*
+_Test projects are planned. Unit tests will cover the booking rules (overlap detection, working-hours checks, cancellation rules), and integration tests will cover the API endpoints._
 
 ---
 
@@ -223,7 +230,7 @@ dotnet test
 
 **DTOs instead of exposing entities.** Responses contain only the fields the API intends to expose. Request DTOs prevent callers from setting fields such as `Id`, and the database model can change without breaking API consumers.
 
-**Times stored in UTC.** The UK switches between GMT and BST, which makes local times ambiguous around clock changes. Storing UTC keeps overlap checks reliable, and conversion to UK time happens only when displaying or reading user input. *(Applies to appointment times, which are planned.)*
+**Times stored in UTC.** The UK switches between GMT and BST, which makes local times ambiguous around clock changes. Storing UTC keeps overlap checks reliable, and conversion to UK time happens only when displaying or reading user input. _(Applies to appointment times, which are planned.)_
 
 **Seed data through EF Core migrations.** A sample vet and working hours are seeded with `HasData`, so a fresh database is usable straight away. All seed data is fictional.
 
@@ -252,9 +259,6 @@ dotnet test
 ---
 
 ## Screenshots
-
-
-
 
 ---
 
