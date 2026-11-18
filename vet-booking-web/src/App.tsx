@@ -1,12 +1,14 @@
-import './App.css'
-import VetList from "./Components/VetList";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Vet from "./pages/Vet";
 
 function App() {
 
   return (
-    <div>
-      <VetList></VetList>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/vets" element={<Vet />}></Route>
+      </Routes>
+    </BrowserRouter>
      
   )
 }
