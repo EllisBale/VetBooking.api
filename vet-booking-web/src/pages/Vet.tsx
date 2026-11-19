@@ -1,4 +1,4 @@
-import VetList from "../Components/VetList"
+import VetList from "../components/VetList"
 
 const Vet = () => {
     return(

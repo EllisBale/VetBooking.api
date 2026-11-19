@@ -22,15 +22,15 @@ export default function VetList() {
     }, []);
 
 
-    if (error) return <div>Error: {error}</div>
-
+    if (error) return <div>Error: {error}</div> 
+    
     return (
-        <div>
-            <h2> Vets </h2>
-            <ul>
+        <div > 
+            <h2> Veterinarians </h2>
+            <ul> 
                 {vets.map((vet) => (
-                    <li key={vet.id}>{vet.name}</li>
-                ))}
+                    <li key={vet.id}>{vet.name}</li> 
+                ))} 
             </ul>
         </div>
     );
