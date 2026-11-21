@@ -3,7 +3,9 @@ import VetList from "../components/VetList"
 const Vet = () => {
     return(
         <div>
-            <VetList></VetList>
+            <VetList />
+        
+        
         </div>
     )
 }
