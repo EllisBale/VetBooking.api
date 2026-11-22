@@ -21,7 +21,6 @@ export default function VetList() {
         );
 
 
-
     useEffect(() => {
         async function fetchVets() {
             try {
@@ -40,7 +39,7 @@ export default function VetList() {
     if (error) return <div>Error: {error}</div> 
     
     return (
-        <div> 
+        <div>
             <div className="flex row justify-between mb-10">
                 <h2> Veterinarians </h2>
                 <button className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded cursor-pointer">
@@ -49,12 +48,10 @@ export default function VetList() {
             </div>
 
              <div className="flex justify-end">
-
                     <SeachBar  
                         placeholder="Search Vets..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-
                     />
                 </div>
 
