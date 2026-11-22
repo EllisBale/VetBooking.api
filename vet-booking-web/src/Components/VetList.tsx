@@ -41,7 +41,12 @@ export default function VetList() {
     
     return (
         <div> 
-            <h2> Veterinarians </h2>
+            <div className="flex row justify-between mb-10">
+                <h2> Veterinarians </h2>
+                <button className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded cursor-pointer">
+                   + Add New Vet
+                </button>
+            </div>
 
              <div className="flex justify-end">
 
@@ -53,10 +58,7 @@ export default function VetList() {
                     />
                 </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10"> 
-                
-                
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5"> 
 
                     {filterVets.length > 0 ? (
                         filterVets.map((vet) => (
