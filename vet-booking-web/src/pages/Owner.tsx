@@ -1,8 +1,8 @@
-
+import OwnerList from "../components/OwnerList";
 
 const Owner = () => {
     return (
-        <div>Test</div>
+        <div> <OwnerList></OwnerList></div>
     )
 }
 export default Owner;
