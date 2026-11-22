@@ -22,6 +22,7 @@ export default function SeachBar({
                     value={value}
                     onChange={onChange}
                     className="p-1 px-2 outline-none"
+                    id="searchbar"
                 />
             </div>
         </div>

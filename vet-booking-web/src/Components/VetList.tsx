@@ -11,13 +11,14 @@ export default function VetList() {
 
     const [query, setQuery] = useState<string>("");
 
+    const searchLower = query.toLowerCase().trim();
+
     const filterVets = query.trim() === ""
         ? vets
         : vets.filter((item) => 
-            item?.name?.toLowerCase().includes(query.toLowerCase())
+            item?.name?.toLowerCase().includes(searchLower) ||
+            item?.specialisation?.toLowerCase().includes(searchLower)
         );
-
-   
 
 
 
