@@ -13,4 +13,14 @@ export interface OwnerResponse {
     email: string;
     address: string;
     phoneNumber: string;
+    pets: PetResponse[];
+}
+
+export interface PetResponse {
+    id: number;
+    name: string;
+    species: string;
+    breed: string;
+    dateOfBirth: string;
+    ownerId: OwnerResponse;
 }
