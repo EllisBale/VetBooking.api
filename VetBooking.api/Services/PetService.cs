@@ -16,7 +16,18 @@ namespace VetBooking.api.Services;
                         Species = pet.Species,
                         Breed = pet.Breed,
                         DateOfBirth = pet.DateOfBirth,
-                        OwnerId = pet.OwnerId
+                        IsDeceased = pet.IsDeceased,
+                        DeceasedDate = pet.DeceasedDate,
+                        OwnerId = pet.OwnerId,
+
+                        Owner = pet.Owner != null ? new OwnerResponse
+                        {
+                            Id = pet.Owner.Id,
+                            Name = pet.Owner.Name,
+                            Email = pet.Owner.Email,
+                            Address = pet.Owner.Address,
+                            PhoneNumber = pet.Owner.PhoneNumber
+                        } : null
                     })
                     .ToListAsync(cancellationToken);
 
@@ -31,7 +42,18 @@ namespace VetBooking.api.Services;
                         Species = pet.Species,
                         Breed = pet.Breed,
                         DateOfBirth = pet.DateOfBirth,
-                        OwnerId = pet.OwnerId
+                        IsDeceased = pet.IsDeceased,
+                        DeceasedDate = pet.DeceasedDate,
+                        OwnerId = pet.OwnerId,
+
+                        Owner = pet.Owner != null ? new OwnerResponse
+                        {
+                            Id = pet.Owner.Id,
+                            Name = pet.Owner.Name,
+                            Email = pet.Owner.Email,
+                            Address = pet.Owner.Address,
+                            PhoneNumber = pet.Owner.PhoneNumber
+                        } : null
                     })
                     .FirstOrDefaultAsync(cancellationToken);
 
@@ -52,6 +74,8 @@ namespace VetBooking.api.Services;
                 Species = request.Species,
                 Breed = request.Breed,
                 DateOfBirth = request.DateOfBirth,
+                IsDeceased = request.IsDeceased,
+                DeceasedDate = request.DeceasedDate,
                 OwnerId = request.OwnerId ?? 0
             };
 
@@ -73,14 +97,25 @@ namespace VetBooking.api.Services;
                 Species = pet.Species,
                 Breed = pet.Breed,
                 DateOfBirth = pet.DateOfBirth,
-                OwnerId = pet.OwnerId
+                IsDeceased = pet.IsDeceased,
+                DeceasedDate = pet.DeceasedDate,
+                OwnerId = pet.OwnerId,
+
+                Owner = pet.Owner != null ? new OwnerResponse
+                {
+                    Id = pet.Owner.Id,
+                    Name = pet.Owner.Name,
+                    Email = pet.Owner.Email,
+                    Address = pet.Owner.Address,
+                    PhoneNumber = pet.Owner.PhoneNumber
+                } : null
             };
         }
 
 
        public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
        {
-            var pet = await context.Pets.FindAsync(id, cancellationToken);
+            var pet = await context.Pets.FindAsync([id], cancellationToken);
 
             if (pet is null)
             {
@@ -104,7 +139,7 @@ namespace VetBooking.api.Services;
 
         public async Task<bool> UpdateAsync(int id, UpdatePetRequest request, CancellationToken cancellationToken)
         {
-            var pet = await context.Pets.FindAsync(id, cancellationToken);
+            var pet = await context.Pets.FindAsync([id], cancellationToken);
             var ownerExists = await context.Owners.AnyAsync(owner => owner.Id == request.OwnerId, cancellationToken);
 
             if (pet is null || !ownerExists)
