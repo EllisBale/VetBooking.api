@@ -171,6 +171,12 @@ namespace VetBooking.api.Migrations
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
+                    b.Property<DateTime?>("DeceasedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeceased")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

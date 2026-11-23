@@ -11,7 +11,13 @@
 
         public DateOnly DateOfBirth { get; set; }
 
+        public bool IsDeceased { get; set; } = false;
+
+        public DateTime? DeceasedDate { get; set; }
+
         public int OwnerId { get; set; }
+
+        public OwnerResponse? Owner { get; set; }
 
     }
 
