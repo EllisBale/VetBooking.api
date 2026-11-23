@@ -67,9 +67,16 @@ export default function OwnerList() {
                                                 <div>
                                                 <div className="flex items-center gap-1.5">
                                                     <span className="text-slate-700 font-medium">Status:</span>
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-900">
-                                                    Active
-                                                    </span>
+                                                    {owner.isActive ? (
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-900">
+                                                        Active
+                                                        </span>
+
+                                                    ) : (
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-emerald-900">
+                                                            Inactive
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center gap-1.5">
                                                     <span className="text-slate-700 font-medium">Pets: Placeholder</span>

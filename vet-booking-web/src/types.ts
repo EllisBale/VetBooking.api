@@ -13,6 +13,7 @@ export interface OwnerResponse {
     email: string;
     address: string;
     phoneNumber: string;
+    isActive: boolean;
     pets: PetResponse[];
 }
 
