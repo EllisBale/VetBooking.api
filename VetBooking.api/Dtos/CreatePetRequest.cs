@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace VetBooking.api.Dtos;
@@ -20,6 +21,7 @@ namespace VetBooking.api.Dtos;
         [Required]
         public DateOnly DateOfBirth { get; set; }
 
+        [DefaultValue(false)]
         public bool IsDeceased { get; set; } = false;
 
         public DateTime? DeceasedDate { get; set; }

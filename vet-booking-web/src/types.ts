@@ -22,5 +22,7 @@ export interface PetResponse {
     species: string;
     breed: string;
     dateOfBirth: string;
-    ownerId: OwnerResponse;
+    isDeceased: boolean;
+    deceasedDate: string;
+    owner: OwnerResponse;
 }
