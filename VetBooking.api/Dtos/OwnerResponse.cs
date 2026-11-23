@@ -14,5 +14,7 @@
 
         public bool IsActive { get; set; }
 
+        public int PetCount { get; set; }
+
     }
 

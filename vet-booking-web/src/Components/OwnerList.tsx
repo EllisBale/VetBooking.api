@@ -79,7 +79,7 @@ export default function OwnerList() {
                                                     )}
                                                 </div>
                                                 <div className="flex items-center gap-1.5">
-                                                    <span className="text-slate-700 font-medium">Pets: Placeholder</span>
+                                                    <span className="text-slate-700 font-medium">Pets: {owner.petCount || 0}</span>
                                                 </div>
                                                 <div className="flex items-center">
                                                     <span className="inline-flex items-center gap-2 text-slate-700 font-medium">Contact Info:  

@@ -14,7 +14,7 @@ export interface OwnerResponse {
     address: string;
     phoneNumber: string;
     isActive: boolean;
-    pets: PetResponse[];
+    petCount: number;
 }
 
 export interface PetResponse {

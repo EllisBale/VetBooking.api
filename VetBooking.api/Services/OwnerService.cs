@@ -16,8 +16,10 @@ public class OwnerService(AppDbContext context) : IOwnerService
                  Email = owner.Email,
                  Address = owner.Address,
                  PhoneNumber = owner.PhoneNumber,
-                 IsActive = owner.IsActive
-                
+                 IsActive = owner.IsActive,
+
+                 PetCount = owner.Pets.Count
+
              })
             .ToListAsync(cancellationToken);
 
