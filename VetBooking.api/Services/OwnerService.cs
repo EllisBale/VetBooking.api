@@ -15,8 +15,9 @@ public class OwnerService(AppDbContext context) : IOwnerService
                  Name = owner.Name,
                  Email = owner.Email,
                  Address = owner.Address,
-                 PhoneNumber = owner.PhoneNumber
-
+                 PhoneNumber = owner.PhoneNumber,
+                 IsActive = owner.IsActive
+                
              })
             .ToListAsync(cancellationToken);
 
@@ -29,7 +30,9 @@ public class OwnerService(AppDbContext context) : IOwnerService
                 Name = owner.Name,
                 Email = owner.Email,
                 Address = owner.Address,
-                PhoneNumber = owner.PhoneNumber
+                PhoneNumber = owner.PhoneNumber,
+                IsActive = owner.IsActive
+
             }).FirstOrDefaultAsync(cancellationToken);
 
 
@@ -45,7 +48,8 @@ public class OwnerService(AppDbContext context) : IOwnerService
             Name = request.Name,
             Email = request.Email,
             Address = request.Address,
-            PhoneNumber = request.PhoneNumber
+            PhoneNumber = request.PhoneNumber,
+            IsActive = request.IsActive
         };
 
 
@@ -66,7 +70,8 @@ public class OwnerService(AppDbContext context) : IOwnerService
             Name = owner.Name,
             Email = owner.Email,
             Address = owner.Address,
-            PhoneNumber = owner.PhoneNumber
+            PhoneNumber = owner.PhoneNumber,
+            IsActive = owner.IsActive
         };
     }
 
@@ -114,6 +119,7 @@ public class OwnerService(AppDbContext context) : IOwnerService
         owner.Email = request.Email;
         owner.Address = request.Address;
         owner.PhoneNumber = request.PhoneNumber;
+        owner.IsActive = request.IsActive;
 
         try
         {

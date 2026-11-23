@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace VetBooking.api.Dtos;
 
@@ -20,6 +21,10 @@ namespace VetBooking.api.Dtos;
         [RegularExpression(@"^\+?[0-9 ]{10,15}$",
            ErrorMessage = "Phone number must contain only digits, spaces and an optional leading +, and be 10 to 15 characters long.")]
         public string PhoneNumber { get; set; } = string.Empty;
+
+
+        [DefaultValue(true)]
+        public bool IsActive { get; set; }
 
     }
 
