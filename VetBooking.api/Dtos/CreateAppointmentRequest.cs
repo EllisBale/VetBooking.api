@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Net.NetworkInformation;
 using VetBooking.api.Models;
 
 namespace VetBooking.api.Dtos;
@@ -18,6 +17,8 @@ namespace VetBooking.api.Dtos;
 
         [StringLength(256)]
         public string? Notes { get; set; }
+
+        public string? ExamRoom { get; set; }
 
         [Required]
         public int? PetId { get; set; }

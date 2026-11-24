@@ -17,6 +17,11 @@
         public int VetId { get; set; }
         public Vet Vet { get; set; } = null!;
 
+        public int OwnerId { get; set; }
+        public Owner Owner { get; set; } = null!;
+
+        public string? ExamRoom { get; set; }
+
         public int AppointmentTypeId { get; set; }
         public AppointmentType AppointmentType { get; set; } = null!;
     }

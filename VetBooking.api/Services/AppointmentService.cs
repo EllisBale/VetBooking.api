@@ -8,19 +8,24 @@ namespace VetBooking.api.Services;
 public class AppointmentService(AppDbContext context) : IAppointmentService
 {
 
-    public async Task<List<AppointmentResponse>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<List<AppointmentDetailResponse>> GetAllAsync(CancellationToken ct)
     {
         return await context.Appointments
             .Include(a => a.Pet)
             .Include(a => a.Vet)
+            .Include(a => a.Owner)
             .Include(a => a.AppointmentType)
-            .Select(app => new AppointmentResponse
+            .Select(app => new AppointmentDetailResponse
             {
                 Id = app.Id,
                 StartUtc = app.StartUtc,
                 EndUtc = app.EndUtc,
                 Status = app.Status,
                 Notes = app.Notes,
+                ExamRoom = app.ExamRoom,
+                OwnerId = app.OwnerId,
+                OwnerName = app.Owner.Name,
+                OwnerPhoneNumber = app.Owner.PhoneNumber,
 
                 AppointmentType = new AppointmentTypeResponse
                 {
@@ -47,107 +52,112 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
                     Specialisation = app.Vet.Specialisation
                 }
 
-            }).ToListAsync(cancellationToken);
+            }).ToListAsync(ct);
     }
 
 
-    public async Task<AppointmentResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<AppointmentDetailResponse?> GetByIdAsync(int id, CancellationToken ct)
     {
-        var appointment = await context.Appointments
+        var app = await context.Appointments
             .Include(a => a.Pet)
             .Include(a => a.Vet)
+            .Include(a => a.Owner)
             .Include(a => a.AppointmentType)
-            .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+            .FirstOrDefaultAsync(a => a.Id == id, ct);
 
-        if (appointment is null)
+        if (app is null)
         {
             return null;
         }
 
-        return new AppointmentResponse
+        return new AppointmentDetailResponse
         {
-            Id = appointment.Id,
-            StartUtc = appointment.StartUtc,
-            EndUtc = appointment.EndUtc,
-            Status = appointment.Status,
-            Notes = appointment.Notes,
+            Id = app.Id,
+            StartUtc = app.StartUtc,
+            EndUtc = app.EndUtc,
+            Status = app.Status,
+            Notes = app.Notes,
+            ExamRoom = app.ExamRoom,
+            OwnerId = app.OwnerId,
+            OwnerName = app.Owner.Name,
+            OwnerPhoneNumber = app.Owner.PhoneNumber,
 
             AppointmentType = new AppointmentTypeResponse
             {
-                Id = appointment.AppointmentType.Id,
-                Name = appointment.AppointmentType.Name,
-                DurationInMinutes = appointment.AppointmentType.DurationInMinutes,
-                Price = appointment.AppointmentType.Price
+                Id = app.AppointmentType.Id,
+                Name = app.AppointmentType.Name,
+                DurationInMinutes = app.AppointmentType.DurationInMinutes,
+                Price = app.AppointmentType.Price
             },
 
             Pet = new PetResponse
             {
-                Id = appointment.Pet.Id,
-                Name = appointment.Pet.Name,
-                Species = appointment.Pet.Species,
-                Breed = appointment.Pet.Breed,
-                DateOfBirth = appointment.Pet.DateOfBirth,
-                OwnerId = appointment.Pet.OwnerId
+                Id = app.Pet.Id,
+                Name = app.Pet.Name,
+                Species = app.Pet.Species,
+                Breed = app.Pet.Breed,
+                DateOfBirth = app.Pet.DateOfBirth,
+                OwnerId = app.Pet.OwnerId
             },
             Vet = new VetResponse
             {
-                Id = appointment.Vet.Id,
-                Name = appointment.Vet.Name,
-                Specialisation = appointment.Vet.Specialisation
+                Id = app.Vet.Id,
+                Name = app.Vet.Name,
+                Specialisation = app.Vet.Specialisation
             }
         };
     }
 
 
-    public async Task<bool> HasAppointmentOverlapAsync(int vetId, DateTime requestedStart, DateTime requestedEnd)
+    public async Task<bool> HasAppointmentOverlapAsync(int vetId, int petId, DateTime reqStart, DateTime reqEnd)
         {
             return await context.Appointments
-                .Where(a => a.VetId == vetId && a.Status != AppointmentStatus.Cancelled)
-                .AnyAsync(a => requestedStart < a.EndUtc && requestedEnd > a.StartUtc);
+                .Where(a => (a.VetId == vetId || a.PetId == petId) && a.Status != AppointmentStatus.Cancelled)
+                .AnyAsync(a => reqStart < a.EndUtc && reqEnd > a.StartUtc);
         }
         
 
-    public async Task<AppointmentResponse?> CreateAsync(CreateAppointmentRequest request, CancellationToken cancellationToken)
+    public async Task<AppointmentDetailResponse?> CreateAsync(CreateAppointmentRequest req, CancellationToken ct)
     {
 
-        if (request is null)
+        if (req is null)
         {
             throw new ArgumentException("Appointment request cannot be null.");
         }
 
-        if (request.StartUtc >= request.EndUtc)
+        if (req.StartUtc >= req.EndUtc)
         {
             throw new ArgumentException("Start time must be before end time.");
         }
 
-        if (request.PetId is null || request.PetId <= 0 ||
-            request.VetId is null || request.VetId <= 0 ||
-            request.AppointmentTypeId is null || request.AppointmentTypeId <= 0)
+        if (req.PetId is null || req.PetId <= 0 ||
+            req.VetId is null || req.VetId <= 0 ||
+            req.AppointmentTypeId is null || req.AppointmentTypeId <= 0)
         {
             throw new ArgumentException("A valid PetId, VetId, and AppointmentTypeId are required.");
         }
 
-        var petExists = await context.Pets.AnyAsync(p => p.Id == request.PetId);
-        var vetExists = await context.Vets.AnyAsync(v => v.Id == request.VetId);
-        var appointmentTypeExists = await context.AppointmentTypes.AnyAsync(at => at.Id == request.AppointmentTypeId);
+        var pet = await context.Pets.FirstOrDefaultAsync(p => p.Id == req.PetId, ct);
+        var vetExists = await context.Vets.AnyAsync(v => v.Id == req.VetId, ct);
+        var appointmentTypeExists = await context.AppointmentTypes.AnyAsync(at => at.Id == req.AppointmentTypeId, ct);
 
-        if (!petExists)
+        if (pet is null)
         {
-            throw new ArgumentException($"Pet ID {request.PetId} does not exist.");
+            throw new ArgumentException($"Pet ID {req.PetId} does not exist.");
         }
 
         if (!vetExists)
         {
-            throw new ArgumentException($"Vet ID {request.VetId} does not exist.");
+            throw new ArgumentException($"Vet ID {req.VetId} does not exist.");
         }
 
         if (!appointmentTypeExists)
         {
-            throw new ArgumentException($"Appointment Type ID {request.AppointmentTypeId} does not exist.");
+            throw new ArgumentException($"Appointment Type ID {req.AppointmentTypeId} does not exist.");
         }
 
 
-        var hasOverlap = await HasAppointmentOverlapAsync(request.VetId.Value, request.StartUtc, request.EndUtc);
+        var hasOverlap = await HasAppointmentOverlapAsync(req.VetId.Value, req.PetId.Value,  req.StartUtc, req.EndUtc);
 
         if (hasOverlap)
         {
@@ -156,20 +166,23 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
 
         var appointment = new Appointment
         {
-            StartUtc = request.StartUtc,
-            EndUtc = request.EndUtc,
-            Status = request.Status,
-            Notes = request.Notes,
-            PetId = request.PetId ?? 0,
-            VetId = request.VetId ?? 0,
-            AppointmentTypeId = request.AppointmentTypeId ?? 0
+            StartUtc = req.StartUtc,
+            EndUtc = req.EndUtc,
+            Status = req.Status,
+            Notes = req.Notes,
+            PetId = req.PetId ?? 0,
+            VetId = req.VetId ?? 0,
+            AppointmentTypeId = req.AppointmentTypeId ?? 0,
+            ExamRoom = req.ExamRoom,
+            OwnerId = pet.OwnerId,
         };
 
 
         try
         {
+
             context.Appointments.Add(appointment);
-            await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(ct);
         }
 
         catch (DbUpdateException ex)
@@ -177,25 +190,25 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
             throw new InvalidOperationException("An error occurred while creating the appointment.", ex);
         }
 
-        var createdAppointment = await GetByIdAsync(appointment.Id, cancellationToken);
+        var createdAppointment = await GetByIdAsync(appointment.Id, ct);
         return createdAppointment!;
 
     }
 
 
-    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    public async Task<bool> DeleteAsync(int id, CancellationToken ct)
     {
-        var appointment = await context.Appointments.FindAsync(id, cancellationToken);
+        var app = await context.Appointments.FindAsync([id], ct);
 
-        if (appointment is null)
+        if (app is null)
         {
             return false;
         }
 
         try
         {
-            context.Appointments.Remove(appointment);
-            await context.SaveChangesAsync(cancellationToken);
+            context.Appointments.Remove(app);
+            await context.SaveChangesAsync(ct);
         }
 
         catch (DbUpdateException ex)

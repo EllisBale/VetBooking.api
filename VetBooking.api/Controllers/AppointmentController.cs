@@ -9,38 +9,38 @@ namespace VetBooking.api.Controllers;
 public class AppointmentController(IAppointmentService service) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<AppointmentResponse>>> GetAllAppointments(CancellationToken cancellationToken)
+    public async Task<ActionResult<List<AppointmentDetailResponse>>> GetAllAppointments(CancellationToken ct)
     {
-        var appointments = await service.GetAllAsync(cancellationToken);
+        var app = await service.GetAllAsync(ct);
 
-        if (appointments is null || appointments.Count is 0)
+        if (app is null || app.Count is 0)
         {
             return NotFound("No Appointments found.");
         }
 
-        return Ok(appointments);
+        return Ok(app);
     }
 
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<AppointmentResponse?>> GetAppointmentById(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<AppointmentDetailResponse?>> GetAppointmentById(int id, CancellationToken ct)
     {
-        var appointment = await service.GetByIdAsync(id, cancellationToken);
+        var app = await service.GetByIdAsync(id, ct);
 
-        if (appointment is null)
+        if (app is null)
         {
             return NotFound("Appointment not found.");
         }
 
-        return Ok(appointment);
+        return Ok(app);
     }
 
     [HttpPost]
 
-    public async Task<ActionResult<AppointmentResponse?>> CreateAppointment([FromBody] CreateAppointmentRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<AppointmentDetailResponse?>> CreateAppointment([FromBody] CreateAppointmentRequest req, CancellationToken ct)
     {
 
-        if (request is null)
+        if (req is null)
         {
             return BadRequest("Appointment request body cannot be null.");
         }
@@ -48,11 +48,11 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
 
         try
         {
-            var createdAppointment = await service.CreateAsync(request, cancellationToken);
+            var createdAppointment = await service.CreateAsync(req, ct);
 
             if (createdAppointment is null)
             {
-                return NotFound($"Pet ID {request.PetId} does not exist.");
+                return NotFound($"Pet ID {req.PetId} does not exist.");
             }
 
             return CreatedAtAction(
@@ -77,16 +77,16 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
 
     [HttpDelete("{id}")]
 
-    public async Task<IActionResult> DeleteAppointment(int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteAppointment(int id, CancellationToken ct)
     {
-        var appointment = await service.GetByIdAsync(id, cancellationToken);
+        var app = await service.GetByIdAsync(id, ct);
 
-        if (appointment is null)
+        if (app is null)
         {
             return NotFound("Appointment Not Found.");
         }
 
-        var deleted = await service.DeleteAsync(id, cancellationToken);
+        var deleted = await service.DeleteAsync(id, ct);
 
         if (!deleted)
         {

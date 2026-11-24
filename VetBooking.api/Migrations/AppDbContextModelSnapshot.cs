@@ -36,10 +36,19 @@ namespace VetBooking.api.Migrations
                     b.Property<DateTime>("EndUtc")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ExamRoom")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PetId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PetId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartUtc")
@@ -55,7 +64,11 @@ namespace VetBooking.api.Migrations
 
                     b.HasIndex("AppointmentTypeId");
 
+                    b.HasIndex("OwnerId");
+
                     b.HasIndex("PetId");
+
+                    b.HasIndex("PetId1");
 
                     b.HasIndex("VetId");
 
@@ -329,11 +342,21 @@ namespace VetBooking.api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VetBooking.api.Models.Pet", "Pet")
-                        .WithMany("Appointments")
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("VetBooking.api.Models.Owner", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("VetBooking.api.Models.Pet", "Pet")
+                        .WithMany()
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("VetBooking.api.Models.Pet", null)
+                        .WithMany("Appointments")
+                        .HasForeignKey("PetId1");
 
                     b.HasOne("VetBooking.api.Models.Vet", "Vet")
                         .WithMany("Appointments")
@@ -342,6 +365,8 @@ namespace VetBooking.api.Migrations
                         .IsRequired();
 
                     b.Navigation("AppointmentType");
+
+                    b.Navigation("Owner");
 
                     b.Navigation("Pet");
 

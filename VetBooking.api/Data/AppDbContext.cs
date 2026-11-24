@@ -71,10 +71,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasIndex(o => o.PhoneNumber);
 
 
+
+        modelBuilder.Entity<Appointment>()
+        .HasOne(a => a.Owner)
+        .WithMany()
+        .HasForeignKey(a => a.OwnerId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.Pet)
+            .WithMany()
+            .HasForeignKey(a => a.PetId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
     }
-
-
-
 
 }
 
