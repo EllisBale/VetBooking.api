@@ -51,6 +51,8 @@ A RESTful API for booking veterinary appointments, built with ASP.NET Core and E
 
 ## Tech Stack
 
+### Backend
+
 | Area        | Technology                     |
 | ----------- | ------------------------------ |
 | Language    | C#                             |
@@ -58,7 +60,20 @@ A RESTful API for booking veterinary appointments, built with ASP.NET Core and E
 | Data access | Entity Framework Core          |
 | Database    | SQL Server (Express / LocalDB) |
 | Testing     | xUnit                          |
-| Tooling     | Git, GitHub, Visual Studio     |
+
+### Frontend
+
+| Area       | Technology   |
+| ---------- | ------------ |
+| Language   | TypeScript   |
+| Library    | React        |
+| Build tool | Vite         |
+| Routing    | React Router |
+| Styling    | Tailwind CSS |
+
+### Tooling
+
+Git, Github, Visual Studio, VS Code
 
 ---
 
