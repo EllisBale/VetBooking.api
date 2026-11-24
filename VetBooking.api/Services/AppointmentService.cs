@@ -111,8 +111,8 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
 
     public async Task<bool> HasAppointmentOverlapAsync(int vetId, int petId, DateTime reqStart, DateTime reqEnd)
         {
-            return await context.Appointments
-                .Where(a => (a.VetId == vetId || a.PetId == petId) && a.Status != AppointmentStatus.Cancelled)
+           return await context.Appointments
+                .Where(a => a.VetId == vetId || a.PetId == petId && a.Status != AppointmentStatus.Cancelled)
                 .AnyAsync(a => reqStart < a.EndUtc && reqEnd > a.StartUtc);
         }
         
@@ -120,78 +120,89 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
     public async Task<AppointmentDetailResponse?> CreateAsync(CreateAppointmentRequest req, CancellationToken ct)
     {
 
-        if (req is null)
-        {
-            throw new ArgumentException("Appointment request cannot be null.");
-        }
+        await using var transaction = await context.Database.BeginTransactionAsync(ct);
 
-        if (req.StartUtc >= req.EndUtc)
-        {
-            throw new ArgumentException("Start time must be before end time.");
-        }
+        try {
 
-        if (req.PetId is null || req.PetId <= 0 ||
-            req.VetId is null || req.VetId <= 0 ||
-            req.AppointmentTypeId is null || req.AppointmentTypeId <= 0)
-        {
-            throw new ArgumentException("A valid PetId, VetId, and AppointmentTypeId are required.");
-        }
+            if (req is null)
+            {
+                throw new ArgumentException("Appointment request cannot be null.");
+            }
 
-        var pet = await context.Pets.FirstOrDefaultAsync(p => p.Id == req.PetId, ct);
-        var vetExists = await context.Vets.AnyAsync(v => v.Id == req.VetId, ct);
-        var appointmentTypeExists = await context.AppointmentTypes.AnyAsync(at => at.Id == req.AppointmentTypeId, ct);
+            if (req.StartUtc >= req.EndUtc)
+            {
+                throw new ArgumentException("Start time must be before end time.");
+            }
 
-        if (pet is null)
-        {
-            throw new ArgumentException($"Pet ID {req.PetId} does not exist.");
-        }
+            if (req.PetId is null || req.PetId <= 0 ||
+                req.VetId is null || req.VetId <= 0 ||
+                req.AppointmentTypeId is null || req.AppointmentTypeId <= 0)
+            {
+                throw new ArgumentException("A valid PetId, VetId, and AppointmentTypeId are required.");
+            }
 
-        if (!vetExists)
-        {
-            throw new ArgumentException($"Vet ID {req.VetId} does not exist.");
-        }
+            var pet = await context.Pets.FirstOrDefaultAsync(p => p.Id == req.PetId, ct);
+            var vetExists = await context.Vets.AnyAsync(v => v.Id == req.VetId, ct);
+            var appointmentTypeExists = await context.AppointmentTypes.AnyAsync(at => at.Id == req.AppointmentTypeId, ct);
 
-        if (!appointmentTypeExists)
-        {
-            throw new ArgumentException($"Appointment Type ID {req.AppointmentTypeId} does not exist.");
-        }
+            if (pet is null)
+            {
+                throw new ArgumentException($"Pet ID {req.PetId} does not exist.");
+            }
 
+            if (!vetExists)
+            {
+                throw new ArgumentException($"Vet ID {req.VetId} does not exist.");
+            }
 
-        var hasOverlap = await HasAppointmentOverlapAsync(req.VetId.Value, req.PetId.Value,  req.StartUtc, req.EndUtc);
-
-        if (hasOverlap)
-        {
-            throw new InvalidOperationException("The selected time slot conflicts with an existing appointment.");
-        }
-
-        var appointment = new Appointment
-        {
-            StartUtc = req.StartUtc,
-            EndUtc = req.EndUtc,
-            Status = req.Status,
-            Notes = req.Notes,
-            PetId = req.PetId ?? 0,
-            VetId = req.VetId ?? 0,
-            AppointmentTypeId = req.AppointmentTypeId ?? 0,
-            ExamRoom = req.ExamRoom,
-            OwnerId = pet.OwnerId,
-        };
+            if (!appointmentTypeExists)
+            {
+                throw new ArgumentException($"Appointment Type ID {req.AppointmentTypeId} does not exist.");
+            }
 
 
-        try
-        {
+            var hasOverlap = await HasAppointmentOverlapAsync(req.VetId.Value, req.PetId.Value,  req.StartUtc, req.EndUtc);
+
+     
+
+            var appointment = new Appointment
+            {
+                StartUtc = req.StartUtc,
+                EndUtc = req.EndUtc,
+                Status = req.Status,
+                Notes = req.Notes,
+                PetId = req.PetId ?? 0,
+                VetId = req.VetId ?? 0,
+                AppointmentTypeId = req.AppointmentTypeId ?? 0,
+                ExamRoom = req.ExamRoom,
+                OwnerId = pet.OwnerId,
+            };
+
+
+            if (hasOverlap)
+            {
+                throw new InvalidOperationException("The selected time slot conflicts with an existing appointment.");
+            }
+
+
+
+           
 
             context.Appointments.Add(appointment);
             await context.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
+
+            var createdAppointment = await GetByIdAsync(appointment.Id, ct);
+            return createdAppointment!;
         }
 
-        catch (DbUpdateException ex)
+        catch (Exception)
         {
-            throw new InvalidOperationException("An error occurred while creating the appointment.", ex);
+            await transaction.RollbackAsync(ct);
+            throw;
         }
 
-        var createdAppointment = await GetByIdAsync(appointment.Id, ct);
-        return createdAppointment!;
+ 
 
     }
 
