@@ -34,18 +34,18 @@ A RESTful API for booking veterinary appointments, built with ASP.NET Core and E
 - Request and response DTOs, so the database model is never exposed directly
 - Entity Framework Core with SQL Server, code-first migrations and seed data
 - Dependency injection throughout
+- Unit and integration tests
+- React and TypeScript front end
 
 **Planned**
 
-- Owners and pets management
+- Vet management system
 - Vets and weekly working hours
 - Appointment booking with end time calculated from the appointment type's duration
 - Conflict detection: no overlapping bookings for the same vet or the same pet
 - Availability endpoint that returns open slots for a vet on a given day
 - Cancellation and rescheduling rules
-- Authentication and role-based authorisation (owner, receptionist, vet, admin)
-- Unit and integration tests
-- React and TypeScript front end
+- Authentication and role-based authorisation (receptionist, vet, admin)
 
 ---
 
@@ -97,6 +97,11 @@ Controller  →  Service  →  AppDbContext  →  SQL Server
 ### Project structure
 
 ```
+
+Tests/
+├── Integration
+├── Unit
+
 VetBooking.api/
 ├── Controllers/    HTTP endpoints
 ├── Services/       Business logic (interfaces and implementations)
@@ -259,16 +264,16 @@ _Test projects are planned. Unit tests will cover the booking rules (overlap det
 - [x] Domain models and initial migration with seed data
 - [x] Appointment types: get all, get by ID, create, delete
 - [x] Appointment types: update
-- [ ] Owners and pets
-- [ ] Vets and working hours
+- [x] Owners and pets
+- [] Vets and working hours
 - [ ] Appointments with calculated end time
 - [ ] Overlap rules for vets and pets
 - [ ] Availability endpoint
 - [ ] Cancellation and rescheduling rules
 - [ ] Authentication and roles
-- [ ] Unit and integration tests
+- [x] Unit and integration tests
 - [ ] Interactive API documentation
-- [ ] React and TypeScript front end
+- [x] React and TypeScript front end
 - [ ] Docker, CI pipeline and deployment
 
 ---
