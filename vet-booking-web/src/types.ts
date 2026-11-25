@@ -27,3 +27,16 @@ export interface PetResponse {
     deceasedDate: string;
     owner: OwnerResponse;
 }
+
+
+export interface AppointmentSummaryResponse {
+    id: number;
+    startUtc: string;
+    endUtc: string;
+    status: string;
+    appointmentTypeName: string;
+    petName: string;
+    ownerName: string;
+    vetName: string;
+    examRoom: string | number;
+}
