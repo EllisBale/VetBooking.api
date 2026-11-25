@@ -3,6 +3,7 @@ import Vet from "./pages/Vet";
 import Layout from "./components/Layout";
 import Owner from "./pages/Owner";
 import Pet from "./pages/Pet";
+import AppointmentsCalendar from "./pages/AppointmentsCalendar";
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
           <Route path="/vets" element={<Vet />}></Route>
           <Route path="/owners" element={<Owner />}></Route>
           <Route path="/pets" element={<Pet />}></Route>
+          <Route path="/appointments" element={<AppointmentsCalendar />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
