@@ -22,6 +22,17 @@ public class AppointmentController(IAppointmentService service) : ControllerBase
     }
 
 
+
+
+    [HttpGet("calendar")]
+    public async Task<ActionResult<List<AppointmentSummaryResponse>>> GetCalendarAppointments(DateTime startUtc, DateTime endUtc, CancellationToken ct)
+    {
+        var app = await service.GetCalendarAsync(startUtc, endUtc, ct);
+
+        return Ok(app);
+    }
+
+
     [HttpGet("{id}")]
     public async Task<ActionResult<AppointmentDetailResponse?>> GetAppointmentById(int id, CancellationToken ct)
     {

@@ -6,6 +6,8 @@ namespace VetBooking.api.Services;
     {
         Task<List<AppointmentDetailResponse>> GetAllAsync(CancellationToken cancellationToken);
 
+        Task<List<AppointmentSummaryResponse>> GetCalendarAsync(DateTime startUtc, DateTime endUtc, CancellationToken ct);
+
         Task<AppointmentDetailResponse?> GetByIdAsync(int id, CancellationToken cancellationToken);
 
         Task<AppointmentDetailResponse?> CreateAsync(CreateAppointmentRequest request, CancellationToken cancellationToken);

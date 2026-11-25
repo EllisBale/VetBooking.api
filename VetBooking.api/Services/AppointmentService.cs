@@ -56,6 +56,28 @@ public class AppointmentService(AppDbContext context) : IAppointmentService
     }
 
 
+    public async Task<List<AppointmentSummaryResponse>> GetCalendarAsync(DateTime startUtc, DateTime endUtc, CancellationToken ct)
+    {
+        return await context.Appointments
+            .Where(app => app.StartUtc >= startUtc && app.EndUtc <= endUtc)
+            .Select(app => new AppointmentSummaryResponse
+            {
+                Id = app.Id,
+                StartUtc = app.StartUtc,
+                EndUtc = app.EndUtc,
+                Status = app.Status,
+                AppointmentTypeName = app.AppointmentType.Name,
+                PetName = app.Pet.Name,
+                OwnerName = app.Owner.Name,
+                VetName = app.Vet.Name,
+                ExamRoom = app.ExamRoom
+
+            })
+            .ToListAsync(ct);
+    }   
+
+
+
     public async Task<AppointmentDetailResponse?> GetByIdAsync(int id, CancellationToken ct)
     {
         var app = await context.Appointments
