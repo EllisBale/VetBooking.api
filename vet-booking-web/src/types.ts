@@ -34,9 +34,17 @@ export interface AppointmentSummaryResponse {
     startUtc: string;
     endUtc: string;
     status: string;
-    appointmentTypeName: string;
-    petName: string;
+    appointmentType: {
+        id: number;
+        name: string;
+        durationInMinutes: number;
+        price: number;
+    };
+    pet: {
+        id: number;
+        name: string;
+    };
     ownerName: string;
     vetName: string;
-    examRoom: string | number;
+    examRoom: string;
 }
