@@ -11,13 +11,19 @@ import listPlugin from "@fullcalendar/react/list";
 import "@fullcalendar/react/skeleton.css";
 import "@fullcalendar/react/themes/monarch/theme.css";
 import "@fullcalendar/react/themes/monarch/palettes/purple.css";
-import type { AppointmentSummaryResponse } from "../types";
 
+
+import type { AppointmentSummaryResponse } from "../types";
+import AppointmentModal from "./AppointmentModal";
+import { useNavigate } from "react-router-dom";
 
 export default function CalendarList() {
-
+    const navigate = useNavigate();
     const [appointment, setAppointment] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
+
+
+    const [selectedAppointment, setSelectedAppointment] = useState<AppointmentSummaryResponse | null >(null);
 
     useEffect(() => {
         async function fetchAppointments() {
@@ -32,8 +38,12 @@ export default function CalendarList() {
                     end: app.endUtc,
 
                     extendedProps: {
+                        id: app.id,
+                        petName: app.pet.name,
+                        typeName: app.appointmentType.name,
                         room: app.examRoom,
                         owner: app.ownerName,
+                        vetName: app.vetName,
                         status: app.status,
                         price: app.appointmentType.price
                     }
@@ -49,6 +59,9 @@ export default function CalendarList() {
         fetchAppointments();
     }, []);
 
+    const handleEventClick = (clickInfo: any) => {
+        setSelectedAppointment(clickInfo.event);
+    };
  
     return (
         <div className="p-4 max-w-8xl mx-auto rounded-xl shadow-md">
@@ -62,10 +75,15 @@ export default function CalendarList() {
                     end: 'dayGridMonth,timeGridWeek,listWeek',
                 }}
                 events= {appointment || error}
-                   
-
-           
+                eventClick={handleEventClick}
             />
+            {selectedAppointment && (
+                <AppointmentModal 
+                    item={selectedAppointment}
+                    onClose={() => setSelectedAppointment(null)}
+                    onViewDetails={(id) => navigate(`/appointments/${id}`)}
+                />
+            )}
         </div>
     );
 }
